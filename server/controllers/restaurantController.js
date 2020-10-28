@@ -6,7 +6,8 @@ class RestauranController {
 
   static showCity (req, res, next){
 
-    let city = "Jakarta" // default
+
+    let city = req.query.city // default
     // city bisa di dapat di req body kiriman client
 
     axios({
@@ -33,17 +34,17 @@ class RestauranController {
   }
   static searchRestaurant (req, res, next){
 
-    const { cityId, nama_makanan } = req.body 
-    // nama_makanan didapat dari req body client
-    // cityId didapat client menilih city
-
+    let cityId = req.query.city
+    let nama_makanan = req.query.makanan
+   
     axios({
       method: 'get',
       url: api + '/search',
       params: {
-        entity_id: cityId || 74,     
+        entity_id: cityId,     
         entity_type: 'city',
-        q: nama_makanan || 'Tahini Yogurt'
+        q: nama_makanan,
+        count: 10
       },
       headers: {
         "user-key": key

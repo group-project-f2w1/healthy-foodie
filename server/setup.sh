@@ -2,3 +2,7 @@ npx sequelize model:create --name User --attributes name:string,email:string,pas
 
 npx sequelize model:create --name FavoriteRecipe --attributes UserId:integer,RecipeId:integer
 
+npx sequelize seed:create --name seed-users
+
+
+

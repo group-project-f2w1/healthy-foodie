@@ -1,0 +1,30 @@
+[
+  {
+    "name": "Deo Mareza",
+    "email": "deomareza@gmail.com",
+    "password": "123",
+    "avatarUrl": "",
+    "themeImageUrl": ""
+  },
+  {
+    "name": "Ikhrom Wicaksono",
+    "email": "ikhromw@gmail.com",
+    "password": "123",
+    "avatarUrl": "",
+    "themeImageUrl": ""
+  },
+  {
+    "name": "Pratama Agung",
+    "email": "pratama@gmail.com",
+    "password": "123",
+    "avatarUrl": "",
+    "themeImageUrl": ""
+  },
+  {
+    "name": "Reynaldi Riva",
+    "email": "reynaldi@gmail.com",
+    "password": "123",
+    "avatarUrl": "",
+    "thedmeImageUrl": ""
+  }
+]

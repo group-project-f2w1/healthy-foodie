@@ -1,7 +1,6 @@
 
 body{
-  background-image: url("https://mdbootstrap.com/img/Photos/Horizontal/Nature/full page/img(20).jpg");
-
+  background-image: url('https://images.pexels.com/photos/747964/pexels-photo-747964.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940');
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -18,4 +17,17 @@ body{
 
 .down-M{
   padding: 50px 0;
+}
+
+.login-btn-group{
+  display: flex;
+}
+
+.login-btn{
+  margin-right:10px;
+  width : 50%;
+}
+
+.login-google{
+  width: 100%;
 }

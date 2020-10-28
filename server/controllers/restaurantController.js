@@ -2,7 +2,7 @@ const axios = require('axios')
 const api = 'https://developers.zomato.com/api/v2.1'
 const key = '2e991f7ad83dc9ab6b6fe7178f3673a3'
 
-class ZomatoController {
+class RestauranController {
 
   static showCity (req, res, next){
 
@@ -66,4 +66,4 @@ class ZomatoController {
   }
 }
 
-module.exports = ZomatoController
+module.exports = RestauranController

@@ -1,6 +1,7 @@
 const { User } = require('../models/')
 
 const { comparePassword } = require('../helpers/bcrypt')
+const { signToken } = require('../helpers/jwt')
 
 class UserController {
 
@@ -77,49 +78,23 @@ class UserController {
         where: { email : payload.email }
       })
 
+      
       if (!user) {
+        
         next({ status: 401, msg: "Invalid email or password"})
-
-        try {
-          user = await User.findOne({
-            where: { username: payload.user }
-          })
-
-          if (!user) {
-            
-          } else if (!comparePassword(payload.password, user.password)){
-            next({ status: 401, msg: "Invalid email or password"})
-
-          } else {
-            // User is found using his/her username
-            const access_token = signToken({
-              id: user.id,
-              email: user.email
-            })
-  
-            res.status(200).json({
-              access_token
-            })
-          }
-          
-        } catch (err) {
-          next(err)
-        }
-
-
+        
       } else if (!comparePassword(payload.password, user.password)) {
-
-        // User is found, but the password given is wrong
+        
+        // Wrong password
         next({ status: 401, msg: "Invalid email or password" })
+        
+      } else {
 
-        } else {
-
-          // User is found using his/her email address
-          const access_token = signToken({
-            id: user.id,
-            email: user.email
-          })
-
+        const access_token = signToken({
+          id: user.id,
+          email: user.email
+        })
+        
           res.status(200).json({ access_token })
         }
   
@@ -129,7 +104,7 @@ class UserController {
 
   }
 
-  static async logout(req, res) {
+  static async signout(req, res, next) {
 
   }
 

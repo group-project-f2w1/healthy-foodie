@@ -3,9 +3,12 @@ const { User } = require('../models/')
 const { comparePassword } = require('../helpers/bcrypt')
 const { signToken } = require('../helpers/jwt')
 
+const {OAuth2Client} = require('google-auth-library');
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
 class UserController {
 
-  static async googleSignin(req, res, next) {
+  static googleSignin(req, res, next) {
     const token = req.body.token
 
     client.verifyIdToken({
@@ -25,17 +28,18 @@ class UserController {
     })
     .then(data => {
         if(data) {
-            return data
+          return data
         } else {
-            return User.create(user)
+          return User.create(user)
         }
     })
     .then(data => {
+      console.log(data)
         // console.log(data.dataValues)
-        const access_token = signToken({
-          email:payload.email
-        })
-        res.status(200).json({access_token, data:data.dataValues.name})
+      const access_token = signToken({
+        email:payload.email
+      })
+      res.status(200).json({access_token, data:data.dataValues.name})
     })
     .catch(err => {
         // console.log(err, '\n>>>>>>>> google login error')

@@ -51,13 +51,13 @@ class RestauranController {
       }
     })
       .then(response => {
-       
        let restaurants = response.data.restaurants.map(el => {
           let obj = {
             id: el.restaurant.id,
             name: el.restaurant.name,
+            url: el.restaurant.url,
             location: el.restaurant.location.address,
-            thumnail: el.restaurant.thumb,
+            thumbnail: el.restaurant.thumb,
             img: el.restaurant.featured_image
           }
           return obj

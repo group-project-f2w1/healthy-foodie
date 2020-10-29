@@ -1,6 +1,8 @@
 const SERVER = 'http://localhost:3000';
 // const {OAuth2Client} = require('google-auth-library');
 // const client = new OAuth2Client(CLIENT_ID);
+let foodKeyword = 'health'
+
 let recipe = {
   vegetarian: true,
   vegan: false,
@@ -174,11 +176,12 @@ let zomato = [
 
 $(document).ready(function(){
   console.log('document is ready 🔥🔥')
-  console.log(recipe.title)
+  $.getScript('./search.js')
   const token = localStorage.getItem('access_token')
   
   if(token){
     afterSignIn()
+
   } else {
     init()
 
@@ -207,8 +210,12 @@ function afterSignIn(){
 function showAllHome(){
   showRecipe()
   showUserFavorites()
-  showRestaurants()
+  // showRestaurants()
   showUserProfile()
+
+  search(foodKeyword)
+  // $.getscript("./search.js", search(foodKeyword));
+  // search('burger')
 }
 
 function afterSignOut(){
@@ -429,7 +436,6 @@ function showUserFavorites(){
 
 function showRestaurants(){
 
-
   $('#restaurants-container').empty()
 
   zomato.forEach(restaurant => {
@@ -449,11 +455,80 @@ function showRestaurants(){
 
 }
 
-function searchRestaurant(){
-  let city = $('#search-bar').val().toLowerCase()
 
+function searchRestaurant(){
+  let city = $('#search-bar').val()
   console.log(city)
+  search(foodKeyword, city)
 }
+
+
+function promiseAjax (url, method, data){
+
+  return new Promise((resolve, reject) => {
+      $.ajax({
+        method: method,
+        url: url,
+        data: data
+      }).done(respones => {
+        resolve(respones)
+      }).fail(err => {
+        reject(err)
+      })
+
+  })
+}
+
+function search(foodInput, cityInput){
+  // e.preventDefault()
+  // const city = $("#city").val() || "jakarta"
+  const city = cityInput || "jakarta"
+  // const food = $('#food').val()
+  const food = foodInput
+  // console.log(city)
+  // console.log(food);
+  const maxDisplay = 5;
+
+  return promiseAjax(SERVER + '/restaurants/city', 'GET', {city})
+      .then(kota => {
+
+        let id = +kota.id
+
+        return promiseAjax(SERVER + '/restaurants/search', 'GET', {city: id, makanan: food })
+      })
+      .then(restaurants => {
+          $('#restaurants-container').empty()
+          
+          for(let i = 0; i < maxDisplay; i++){
+            let restaurant = restaurants[i]
+            
+            if(restaurant.img){
+              let gMapURL = (`https://www.google.com/maps/search/?api=1&query=${restaurant.location}`)
+              $('#restaurants-container').append(`
+                <div class="card mb-2">
+                <img class="card-img-top" src=${restaurant.img} alt="Card image cap">
+                <div class="card-body">
+            
+                  <h5 class="card-title"><a href = ${restaurant.url} target="_blank">${restaurant.name}</a></h5>
+                  <p class="card-text"><a href = ${gMapURL} target="_blank">View Location</a></p>
+            
+                </div>
+              </div>
+              `)
+              
+            }
+          }
+            
+          $("#city").val("")
+          $('#food').val("")
+
+      })
+      .catch(err => {
+        console.log(err);
+
+      })
+} 
+
 
 function signOut() {
   var auth2 = gapi.auth2.getAuthInstance();

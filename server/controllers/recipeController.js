@@ -22,7 +22,7 @@ class RecipeController {
       const favorites = await FavoriteRecipe.findAll({
         where: { UserId: decoded.id },
       })
-      console.log(favorites)
+      // console.log(favorites)
       
       res.status(200).json({ data: favorites })
 
@@ -63,6 +63,8 @@ class RecipeController {
   
     
     let food = req.query.food
+
+    console.log({food})
    
     axios({
       method: 'get',
@@ -75,11 +77,12 @@ class RecipeController {
     })
       .then(response => {
         
-        console.log(response.data)
+        console.log({response})
        
         res.status(200).json(response.data)
       })
       .catch(err => {
+        console.log({err})
         next(err)
       })
   }

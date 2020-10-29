@@ -4,7 +4,7 @@ const recipeController = require('../controllers/recipeController')
 
 router.get('/favorites', recipeController.favorites)
 router.get('/search', recipeController.search)
-router.post('/addToFavorites/:RecipeId', recipeController.addToFavorites)
+router.get('/addToFavorites', recipeController.addToFavorites)
 router.delete('/delete/:RecipeId', recipeController.delete)
 
 

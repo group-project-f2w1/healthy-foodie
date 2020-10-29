@@ -1,6 +1,6 @@
 const axios = require('axios')
-const key = 'qYUA48NMR9f6RFl6_0kIwmobSEa9wBng26Z-6jsVKiM'
-const api = 'https://api.unsplash.com' 
+const key = process.env.UNSPLASH_KEY2
+const api = process.env.API_UNSPLASH
 
 class imgController {
 

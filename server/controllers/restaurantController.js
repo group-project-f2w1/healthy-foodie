@@ -1,6 +1,6 @@
 const axios = require('axios')
-const api = 'https://developers.zomato.com/api/v2.1'
-const key = '2e991f7ad83dc9ab6b6fe7178f3673a3'
+const api = process.env.API_ZOMATO
+const key = process.env.ZOMATO_KEY
 
 class RestauranController {
 

@@ -475,7 +475,7 @@ function showUserFavorites(){
 
 function searchRestaurant(){
   let city = $('#search-bar').val()
-  console.log(city)
+  console.log(city, '<<<<')
   search(foodKeyword, city)
 }
 
@@ -506,6 +506,9 @@ function search(foodInput, cityInput){
   // console.log(food);
   const maxDisplay = 5;
 
+  console.log('kkjkjk');
+  
+
   return promiseAjax(SERVER + '/restaurants/city', 'GET', {city})
       .then(kota => {
 
@@ -520,9 +523,12 @@ function search(foodInput, cityInput){
           
           for(let i = 0; i < maxDisplay; i++){
             let restaurant = restaurants[i]
+            //console.log(restaurant, '<<<<<');
+            let location = restaurant.location.split(' ').join('%20')
+            
             
             if(restaurant.img){
-              let gMapURL = (`https://www.google.com/maps/search/?api=1&query=${restaurant.location}`)
+              let gMapURL = (`https://www.google.com/maps/search/?api=1&query=${location}`)
               $('#restaurants-container').append(`
                 <div class="card mb-2">
                 <img class="card-img-top" src=${restaurant.img} alt="Card image cap">

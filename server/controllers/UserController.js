@@ -59,7 +59,8 @@ class UserController {
 
   static async signup(req, res, next) {
 
-    // console.log(req.body)
+    console.log(req.body)
+    console.log('^----- sign up')
     
     try {
       const payload = {
@@ -70,9 +71,10 @@ class UserController {
       
       const user = await User.create(payload)
 
+      console.log(user.toJSON(), '^----- sign up success:')
+
       res.status(201).json({
-        message: 'Account registration successful',
-        email: user.email
+        message: 'Account registration successful: ' + user.email
       })
       
     } catch (error) {

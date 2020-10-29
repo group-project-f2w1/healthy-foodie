@@ -22,7 +22,7 @@ class UserController {
     })
     .then(ticket=>{
         payload = ticket.getPayload()
-
+        
         user = {
             name: payload.name,
             email: payload.email,

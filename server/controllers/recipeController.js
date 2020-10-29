@@ -16,9 +16,8 @@ class RecipeController {
       const favorites = await FavoriteRecipe.findAll({
         where: { UserId },
       })
-
-      favorites = favorites.map(fav => fav.recipeName)
-
+      console.log(favorites)
+      
       res.status(200).json({ data: favorites })
 
 

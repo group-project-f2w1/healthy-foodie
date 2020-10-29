@@ -17,7 +17,7 @@ class RecipeController {
         where: { UserId },
       })
 
-      favorites = favorites.map(fav => fav.recipe_name)
+      favorites = favorites.map(fav => fav.recipeName)
 
       res.status(200).json({ data: favorites })
 
@@ -80,12 +80,12 @@ class RecipeController {
   }
 
   static async addToFavorites(req, res, next) {
+    
+    console.log(req.query)
 
     try {
       const UserId = verifyToken(req.headers.access_token).id
-      const { RecipeId } = req.params
-
-      // console.log({UserId, RecipeId})
+      const { RecipeId, recipeName } = req.query
 
       const hadBeenAdded = await FavoriteRecipe.findOne({
         where: {UserId, RecipeId}
@@ -95,12 +95,14 @@ class RecipeController {
           message: 'Recipe had already been added to favorites'
         })
       } else {
-        const favorite = await FavoriteRecipe.create({UserId, RecipeId})
+
+        console.log({UserId, RecipeId, recipeName})
+        const favorite = await FavoriteRecipe.create({UserId, RecipeId, recipeName})
   
         // console.log(favorite.toJSON(), '\n ^----- added to favorite')
   
         res.status(201).json({
-          message: 'Recipe added to favorites'
+          message: 'Recipe was successfully added to favorites'
 
         })
   

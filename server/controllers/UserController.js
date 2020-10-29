@@ -24,14 +24,15 @@ class UserController {
             password: "123"
         }
 
+        console.log(user)
         return User.findOne({where : { email: user.email }})
     })
     .then(data => {
-        if(data) {
-          return data
-        } else {
-          return User.create(user)
-        }
+      if(data) {
+        return data
+      } else {
+        return User.create(user)
+      }
     })
     .then(data => {
       console.log(data)

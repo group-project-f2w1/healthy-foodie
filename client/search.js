@@ -27,7 +27,9 @@ function search (e){
 
   return promiseAjax(SERVER + '/restaurants/city', 'GET', {city})
           .then(kota => {
-           
+            
+            console.log(city);
+            
             let id = +kota.id
             
             return promiseAjax(SERVER + '/restaurants/search', 'GET', {city: id, makanan: food })
@@ -49,6 +51,17 @@ function search (e){
               $("#city").val("")
               $('#food').val("")
               
+          })
+          .catch(err => {
+            console.log(err);
+            
+          })
+}
+
+function img (){
+  return promiseAjax(SERVER + '/img/random', 'GET')
+          .then(img => {
+            console.log(img); 
           })
           .catch(err => {
             console.log(err);

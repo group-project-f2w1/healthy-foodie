@@ -376,8 +376,7 @@ function showUserProfile(){
         <div class ='avatar-container mb-3'>
           <img class='avatar' src = ${profile_picture}>
         </div>
-        <h5 class="card-title">Welcome back, ${response.name}!</h5>
-        <a href="" class="btn btn-sm btn-primary">Favourite this Recipe</a>
+        <h5 class="card-title" style="text-align:center;">Welcome back, ${response.name}!</h5>
       </div>
     </div>
     `)

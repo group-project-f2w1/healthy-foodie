@@ -83,17 +83,17 @@
         <ul class="navbar-nav mr-auto">
   
           <li class="nav-item">
-            <a class="nav-link" href="#">Next Recipe</a>
+            <a class="nav-link" onclick ="showRecipe()" href="#">Next Recipe</a>
           </li>
 
           <!-- Debug Links -->
 
           <!-- <li class="nav-item">
-            <a class="nav-link" onclick ="showUserProfile(event)" href="#">FindOne</a>
-          </li> -->
+            <a class="nav-link" onclick ="testSearch()" href="#">GET Restaurant</a>
+          </li>
 
-          <!-- <li class="nav-item">
-            <a class="nav-link" href="">Next Recipe</a>
+          <li class="nav-item">
+            <a class="nav-link"  href="#">Next Recipe</a>
           </li> -->
 
           <!-- END Debug Links -->
@@ -103,10 +103,10 @@
           </li>
         </ul>
 
-        <form class="form-inline my-2 my-lg-0">
+        <div class="form-inline my-2 my-lg-0">
           <input id='search-bar' class="form-control mr-sm-2" type="search" placeholder="Your City" aria-label="Search">
           <button class="btn btn-outline-success my-2 my-sm-0" type="submit" onclick="searchRestaurant()">Search</button>
-        </form>
+        </div>
       </div>
 
     </div>
@@ -132,7 +132,6 @@
 
         <div class="card" id="content-recipe">
           <!-- This section will be appended with jQuery showRecipe() -->
-
         </div>
 
       </div>
@@ -142,6 +141,10 @@
 
         <div id = 'restaurants-container'>       
           <!-- This section will be appended with jQuery showRestaurants() -->
+        </div>
+
+        <div id = 'restaurants'>
+
         </div>
 
       </div>
@@ -199,6 +202,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
   <script src="https://apis.google.com/js/platform.js" async defer></script>
 
+  <script src="search.js"></script>
   <script src="index.js"></script>
 </body>
 </html>

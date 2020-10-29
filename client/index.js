@@ -264,34 +264,32 @@ function signUp(){
 
 }
 
+function signGoogle(){
+ // var profile = googleUser.getBasicProfile();
+  // console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+  // console.log('Name: ' + profile.getName());
+  // console.log('Image URL: ' + profile.getImageUrl());
+  // console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+}
+
 async function onSignIn(googleUser) {
 
-  var profile = googleUser.getBasicProfile();
-  console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-  console.log('Name: ' + profile.getName());
-  console.log('Image URL: ' + profile.getImageUrl());
-  console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
 
-  let google_user_token = googleUser.getAuthResponse().id_token;
+  let google_user_token = await googleUser.getAuthResponse().id_token;
 
-  /**
-   * TODO : 
-   *  Kirim ke backend untuk di verifikasi
-   * NEED : 
-   *  url route for google sign in
-   */
 
    $.ajax({
      method : 'POST',
-     url : 'googleLoginURL',
+     url : SERVER + '/googleSignin',
      data : {
-       google_user_token
+       token : google_user_token
      }
-   })
-   .done(()=>{
-     afterSignIn()
-   })
-   .fail((error)=>{
+   }).done((data)=>{
+    console.log('signin request success!!')
+    console.log(data)
+    afterSignIn()
+
+   }).fail((error)=>{
      showError(error.responseJSON.message)
    })
 

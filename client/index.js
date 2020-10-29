@@ -149,35 +149,14 @@ let tempRecipe = {
       'https://spoonacular.com/cracked-wheat-salad-with-dates-tahini-yogurt-640338',
 }
 
-let googleUser = {
-  name : 'Deo Mareza',
-  avatarUrl : 'https://lh3.googleusercontent.com/a-/AOh14GgezQV4qqXZEXfIRdIYLkh83P8Krg4ONbXo77HQ0w=s96-c'
-}
-
-let zomato = [
-  {
-    id: "18665235",
-    name: "Dope Burger & Co.",
-    location: "Jl. Teuku Cik Ditiro No. 25, Menteng, Jakarta",
-    url: "https://www.zomato.com/jakarta/dope-burger-co-menteng?utm_source=api_basic_user&utm_medium=api&utm_campaign=v2.1",
-    thumnail: "https://b.zmtcdn.com/data/pictures/5/18665235/91953fdc5136be707f0ac227fc4fdb5e.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A",
-    img: "https://b.zmtcdn.com/data/pictures/5/18665235/91953fdc5136be707f0ac227fc4fdb5e.jpg"
-  },
-  {
-    id: "18665235",
-    name: "Dope Burger & Co.",
-    location: "Jl. Teuku Cik Ditiro No. 25, Menteng, Jakarta",
-    url: "https://www.zomato.com/jakarta/dope-burger-co-menteng?utm_source=api_basic_user&utm_medium=api&utm_campaign=v2.1",
-    thumnail: "https://b.zmtcdn.com/data/pictures/5/18665235/91953fdc5136be707f0ac227fc4fdb5e.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A",
-    img: "https://b.zmtcdn.com/data/pictures/5/18665235/91953fdc5136be707f0ac227fc4fdb5e.jpg"
-  }
-]
 
 $(document).ready(function(){
   console.log('document is ready 🔥🔥')
   $.getScript('./search.js')
   const token = localStorage.getItem('access_token')
   
+  
+
   if(token){
     afterSignIn()
 
@@ -191,9 +170,8 @@ function init(){
   $('#page_login').show()
   $('#page_home').hide()
   $('#error').hide()
+  getBGPicture()
 
-  // changing BG ↘
-  // $('body').css('background-image', "url('https://mdbootstrap.com/img/Photos/Horizontal/Nature/full page/img(20).jpg')")
 }
 
 function afterSignIn(){
@@ -220,10 +198,24 @@ function afterSignOut(){
   $('#page_home').hide()
   $('#page_login').show()
 
-  $('body').css('background-image', "url('https://mdbootstrap.com/img/Photos/Horizontal/Nature/full page/img(20).jpg')")
-
+  getBGPicture()
 }
 
+function getBGPicture(){
+
+  $('body').css('background-image', "url('https://picsum.photos/1600/1080?grayscale&blur=2')")
+  // $.ajax({
+  //   method : 'GET',
+  //   url : SERVER + '/img/random',
+
+  // }).done(response => {
+  //   console.log(response)
+  //     $('body').css('background-image', `url('${response.imgUrl.html}')`)
+
+  // }).fail(err => {
+  //   console.log(err)
+  // })
+}
 
 function signIn(e){
   e.preventDefault()
@@ -331,47 +323,50 @@ function showRecipe(){
 
   /// temp recipe /// save bandwith //
 
-  $('#content-recipe').empty()
-  $('#content-recipe').append(`
+  // $('#content-recipe').empty()
+  // $('#content-recipe').append(`
 
-  <img class="card-img-top" src="${tempRecipe.image}" alt="Card image cap">
-  <div class="card-body">
-    <h5 class="card-title">${tempRecipe.title}</h5>
-    <p class="card-text">${tempRecipe.summary}</p>
+  // <img class="card-img-top" src="${tempRecipe.image}" alt="Card image cap">
+  // <div class="card-body">
+  //   <h5 class="card-title">${tempRecipe.title}</h5>
+  //   <p class="card-text">${tempRecipe.summary}</p>
 
-    <a href=${tempRecipe.sourceUrl} target="_blank" class="btn btn-primary">Checkout Full Recipe</a>
-    <a href="#" onclick="addToFavorites('${tempRecipe.id}', '${tempRecipe.title}')" class="btn btn-primary">Save to Favorites</a>
+  //   <a href=${tempRecipe.sourceUrl} target="_blank" class="btn btn-primary">Checkout Full Recipe</a>
+  //   <a href="#" onclick="addToFavorites('${tempRecipe.id}', '${tempRecipe.title}')" class="btn btn-primary">Save to Favorites</a>
 
-    </div>
-  `)
+  //   </div>
+  // `)
 
   // =========== //
   // Real Recipe //
 
-  // $.ajax({
-  //   method : 'GET',
-  //   url : SERVER + `/recipes/search?food=${foodKeyword}`
-  // }).done(response => {
-  //   let randomNum = Math.floor(Math.random() * response.results.length);
-  //   let recipe = response.results[randomNum]
+  $.ajax({
+    method : 'GET',
+    url : SERVER + `/recipes/search?food=${foodKeyword}`
+  }).done(response => {
+    let randomNum = Math.floor(Math.random() * response.results.length);
+    console.log(response.results)
+    console.log(response.results.length)
+    console.log(randomNum)
+    let recipe = response.results[randomNum]
 
-  //   foodKeyword = recipe.title    
-  //   search(recipe.title)
+    foodKeyword = recipe.title    
+    search(recipe.title)
     
-  //   $('#content-recipe').empty()
-  //   $('#content-recipe').append(`
+    $('#content-recipe').empty()
+    $('#content-recipe').append(`
   
-  //   <img class="card-img-top" src="${recipe.image}" alt="Card image cap">
-  //   <div class="card-body">
-  //     <h5 class="card-title">${recipe.title}</h5>
-  //     <p class="card-text">${recipe.summary}</p>
-  //     <a href=${recipe.sourceUrl} target="_blank" class="btn btn-primary">Checkout Full Recipe</a>
-  //     <a href="#" onclick="addToFavorites('${recipe.id}', '${recipe.title}')" class="btn btn-primary">Save to Favorites</a>
-  //     </div>
-  //   `)    
-  // }).fail(response => {
-  //   console.log(response)
-  // })
+    <img class="card-img-top" src="${recipe.image}" alt="Card image cap">
+    <div class="card-body">
+      <h5 class="card-title">${recipe.title}</h5>
+      <p class="card-text">${recipe.summary}</p>
+      <a href=${recipe.sourceUrl} target="_blank" class="btn btn-primary">Checkout Full Recipe</a>
+      <a href="#" onclick="addToFavorites('${recipe.id}', '${recipe.title}')" class="btn btn-primary">Save to Favorites</a>
+      </div>
+    `)    
+  }).fail(response => {
+    console.log(response)
+  })
 
 
 }

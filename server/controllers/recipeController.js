@@ -9,12 +9,18 @@ class RecipeController {
 
   static async favorites (req, res, next){
 
+    console.log('favorites triggered')
+
 
     try {
-      const UserId = verifyToken(req.headers.access_token).id
+
+      // console.log(req.headers)
+      const decoded = verifyToken(req.headers.access_token)
+
+      console.log({decoded})
 
       const favorites = await FavoriteRecipe.findAll({
-        where: { UserId },
+        where: { UserId: decoded.id },
       })
       console.log(favorites)
       
@@ -90,7 +96,8 @@ class RecipeController {
         where: {UserId, RecipeId}
       })
       if (hadBeenAdded) {
-        res.status(400).json({ 
+        next({
+          status: 400, 
           message: 'Recipe had already been added to favorites'
         })
       } else {

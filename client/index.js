@@ -268,6 +268,7 @@ function signUp(){
       password
     }
   }).done(response => {
+    console.log(response.message)
 
   })
   .fail((error)=>{

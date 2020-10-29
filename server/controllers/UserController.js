@@ -1,7 +1,7 @@
 const { User } = require('../models/')
 
 const { comparePassword } = require('../helpers/bcrypt')
-const { signToken } = require('../helpers/jwt')
+const { signToken, verifyToken } = require('../helpers/jwt')
 
 const {OAuth2Client} = require('google-auth-library');
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
@@ -26,33 +26,33 @@ class UserController {
         user = {
             name: payload.name,
             email: payload.email,
-            password: "123"
+            password: "123",
+            avatarUrl : payload.picture
         }
-
         return User.findOne({where : { email: user.email }})
     })
     .then(data => {
         if(data) {
 
-          console.log(data.toJSON())
-          console.log('^----- user sdh ada di database')
+          // console.log(data.toJSON())
+          // console.log('^----- user sdh ada di database')
         
           return data
         } else {
-          console.log('user belum ada di database, bikin sekarang')
+          // console.log('user belum ada di database, bikin sekarang')
           return User.create(user)
         }
     })
     .then(data => {
-      console.log(data.toJSON())
-      console.log('^----- data user yang akan dikasi access token')
+      // console.log(data.toJSON())
+      // console.log('^----- data user yang akan dikasi access token')
       const access_token = signToken({
         email:payload.email
       })
-      res.status(200).json({access_token, data:data.dataValues.name})
+      res.status(200).json({access_token})
     })
     .catch(err => {
-        console.log(err, '\n^----- google login error')
+        // console.log(err, '\n^----- google login error')
         next(err)
     })
   }
@@ -125,6 +125,27 @@ class UserController {
 
   static async signout(req, res, next) {
 
+  }
+
+  static async findOne(req,res,next){
+    try {
+      const token = req.headers.access_token
+      const email = verifyToken(token).email
+      
+      const userData = await User.findOne({
+        where : { email }
+      })
+
+      const returnedData = {
+        name : userData.name,
+        avatarUrl : userData.avatarUrl
+      }
+
+      res.status(200).json(returnedData)
+
+    } catch (err) {
+      next(err)
+    }
   }
 
 }

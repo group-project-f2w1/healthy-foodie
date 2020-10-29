@@ -51,7 +51,6 @@ class RestauranController {
       }
     })
       .then(response => {
-       
        let restaurants = response.data.restaurants.map(el => {
           let obj = {
             id: el.restaurant.id,

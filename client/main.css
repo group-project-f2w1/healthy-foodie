@@ -1,10 +1,21 @@
 
 body{
-  background-image: url('https://images.pexels.com/photos/747964/pexels-photo-747964.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940');
+  height: 100%;
+  width: 100%;
+  background-image : url('https://images.pexels.com/photos/747964/pexels-photo-747964.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940');
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+
+  position:relative;
   z-index: -10;
+}
+
+.darken-overlay{
+  background: rgba(0, 0, 0, 0.1);
+  background-position: center;
+  background-repeat: repeat;
+  z-index: -1;
 }
 
 .min-height-L{
@@ -30,4 +41,22 @@ body{
 
 .login-google{
   width: 100%;
+}
+
+.avatar{
+  display:block;
+  margin:auto;
+  width : 150px;
+  border-radius: 50%;
+}
+
+.drop-shadow {
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, .5);
+  /* drop-shadow(0 0 5px #000000); */
+}
+
+.recipe-avatar{
+  width:200px;
+  object-fit: cover;
+  border-radius:7px;
 }

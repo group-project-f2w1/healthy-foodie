@@ -324,11 +324,16 @@ function showRecipe(){
   // temp recipe /// save bandwith //
   checkAdded(tempRecipe.id, (res) => {
     let temp
+    let fav
     if(res.includes("Add")) {
       temp = `<a href="#" onclick="addToFavorites('${tempRecipe.id}', '${tempRecipe.title}')" class="btn btn-primary">${res}</a>`
-    } else temp = `<a href="#" onclick="removeFavorites(${tempRecipe.id})" class="btn btn-primary">${res}</a>`
+    } else {
+
+      temp = `<a href="#" onclick="removeFavorites(${tempRecipe.id})" class="btn btn-danger">${res}</a>`
+    }
     $('#content-recipe').empty()
     $('#content-recipe').append(`
+
     
     <img class="card-img-top" src="${tempRecipe.image}" alt="Card image cap">
     <div class="card-body" id="recipe">
@@ -360,7 +365,7 @@ function showRecipe(){
       let temp
       if(res.includes("Add")) {
         temp = `<a href="#" onclick="addToFavorites('${recipe.id}', '${recipe.title}')" class="btn btn-primary">${res}</a>`
-      } else temp = `<a href="#" onclick="removeFavorites(${recipe.id})" class="btn btn-primary">${res}</a>`
+      } else temp = `<a href="#" onclick="removeFavorites(${recipe.id})" class="btn btn-danger">${res}</a>`
       $('#content-recipe').empty()
       $('#content-recipe').append(`
   
@@ -502,7 +507,7 @@ function showUserFavorites(){
           </div>
           
           
-          <a href="#" onclick="removeFavorites(${fave.RecipeId})" class="btn btn-primary">
+          <a href="#" onclick="removeFavorites(${fave.RecipeId})">
           <div class = "col">        
           
           <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash" fill="currentColor" xmlns="http://www.w3.org/2000/svg">

@@ -13,60 +13,63 @@
 </head>
 
 <body>
-
+  <div id="error" class="alert alert-danger" role="alert">
+    
+  </div>
 
   <!-- LOGIN -->
   <section id="page_login" >
   
-  <div class="container">
-    <div class = "min-height-L align-items-center">
-      <div class = "row down-M">
-        <div class="col-12 text-center text-white" >
-          <h1 style="font-size: 50px;">Placeholder header</h3>
-        </div>
-
-      </div>
-      
-      <div class = "row" >
-        <!-- replace with picture later -->
-        <div class="col-7" style="background-color: aliceblue;">
-        </div>
-  
-        <div class="col-4 ">
-  
-          <div class="card">
-            <h5 class = "card-header">Sign Up</h5>
-            <div class="card-body">
-             
-              <form>
-  
-                <label for="email">Email</label><br>
-                <input type="text" name="email" id="signup-email" style="width: 100%;" placeholder="name@email.com"><br><br>
-                <label for="password">Password</label><br>
-                <input type="password" name="password" id="signup-password" style="width: 100%;" placeholder="password"><br><br>
-                
-                
-              </form>
-              
-                <div class = "login-btn-group">
-                  <button type = "submit" class = "btn btn-primary login-btn" onclick="signIn(event)">Sign In</button>
-                  <div class="g-signin2 login-google" data-onsuccess="onSignIn"></div>
-
-                </div>
-                <br>
-                <h6 class="text-left font-weight-light"><a href="#" data-toggle="modal" data-target="#modal_register">New? Register Here</a></h6>
-                <h6 class="text-left font-weight-light"><a href="#" onclick="signOut()">Logout</a></h6>
-  
-              
-            </div>
-    
-    
+    <div class="container">
+      <div class = "min-height-L align-items-center">
+        <div class = "row down-M">
+          <div class="col-12 text-center text-white" >
+            <h1 style="font-size: 50px;">Placeholder header</h3>
           </div>
+
         </div>
-        <div class="col"></div>    
+        
+        <div class = "row" >
+          <div class="col">
+
+          </div>
+    
+          <div class="col-5 ">
+    
+            <div class="card">
+              <!-- <h5 class = "card-header">Sign Up</h5> -->
+              <div class="card-body">
+              
+                <form>
+    
+                  <label for="email">Email</label><br>
+                  <input type="text" name="email" id="signin-email" style="width: 100%;" placeholder="name@email.com"><br><br>
+                  <label for="password">Password</label><br>
+                  <input type="password" name="password" id="signin-password" style="width: 100%;" placeholder="password"><br><br>
+                  
+                  
+                </form>
+                
+                  <div class = "login-btn-group">
+                    <button type = "submit" class = "btn btn-primary login-btn" onclick="signIn(event)">Sign In</button>
+                    <div class="g-signin2 login-google" data-onsuccess="onSignIn"></div>
+
+                  </div>
+                  <br>
+                  <h6 class="text-left font-weight-light"><a href="#" data-toggle="modal" data-target="#modal_register">New? Register Here</a></h6>
+                  <h6 class="text-left font-weight-light"><a href="#" onclick="signOut()">Logout</a></h6>
+                  <h6 class="text-left font-weight-light"><a href="#" onclick="afterSignIn()">Bypass Login</a></h6>
+    
+                
+              </div>
+      
+      
+            </div>
+          </div>
+          <div class="col"></div>    
+        </div>
       </div>
     </div>
-  </div>
   </section>
 
   <section id="page_home">
@@ -84,47 +87,56 @@
         <ul class="navbar-nav" style="max-width: 800px; width: 100%; justify-content: space-between;">
   
           <li class="nav-item mr-lg-5">
-            <a class="nav-link" href="#">Next Recipe</a>
+            <a class="nav-link" href="">Next Recipe</a>
           </li>
 
           <li class="nav-item">
             <a class="nav-link" id = "sign-out" onclick = "signOut()"href="#">Sign Out</a>
           </li>
-  
         </ul>
       </div>
 
     </div>
 
   </nav>
+
+  <!-- Home page -->
   <div class="container my-lg">
     <div class = "row mt-5">
       <div class="col-3">
 
-        <div class="card">
-          <img class="card-img-top" src="" alt="Card image cap">
+        <div class="card mb-3" id="content-profile">
+          <div class="card-body">
+            <div class ='avatar-container mb-3'>
+              <img class='avatar' src = "https://lh3.googleusercontent.com/a-/AOh14GgezQV4qqXZEXfIRdIYLkh83P8Krg4ONbXo77HQ0w=s96-c">
+            </div>
+            <h5 class="card-title">Welcome back, Deo Mareza!</h5>
+            <a href="" class="btn btn-sm btn-primary">Favourite this Recipe</a>
+          </div>
+        </div>
+
+        <div id='favourite-container'>
+
+          
+
+        </div>
+
+      </div>
+      <div class="col-6">
+
+        <div class="card" id="content-recipe">
+          <!-- This section will be appended with jQuery showRecipe() -->
+          <!-- <img class="card-img-top" src="" alt="Card image cap">
           <div class="card-body">
             <h5 class="card-title">Card title</h5>
             <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
             <a href="#" class="btn btn-primary">Go somewhere</a>
-          </div>
+          </div> -->
+
         </div>
 
       </div>
-      <div class="col-5">
-        
-        <h1>Content Makanan</h1>
-        <div class="card">
-          <img class="card-img-top" src="" alt="Card image cap">
-          <div class="card-body">
-            <h5 class="card-title">Card title</h5>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
-          </div>
-        </div>
-
-      </div>
-      <div class="col-4">
+      <div class="col-3">
 
         <h1>Zomato Bar</h1>
         <div class="card">
@@ -132,7 +144,7 @@
           <div class="card-body">
             <h5 class="card-title">Card title</h5>
             <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
+            <a href="" class="btn btn-primary">Go somewhere</a>
           </div>
         </div>
 
@@ -169,7 +181,7 @@
               </div>
               <div class="form-group">
                 <label for="password">Password</label>
-                <input type="text" class="form-control" id="register-password" placeholder="password">
+                <input type="password" class="form-control" id="register-password" placeholder="password">
               </div>
 
             </form>
@@ -183,7 +195,11 @@
     </div>
 
   <!-- jQuery and JS bundle w/ Popper.js -->
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+  <script
+  src="https://code.jquery.com/jquery-3.5.1.js"
+  integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+  crossorigin="anonymous"></script>
+  <!-- <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script> -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
   <script src="https://apis.google.com/js/platform.js" async defer></script>
 

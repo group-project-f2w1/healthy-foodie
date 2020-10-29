@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/group-project-f2w1/healthy-foodie#readme",
   "dependencies": {
+    "axios": "^0.21.0",
     "bcrypt": "^5.0.0",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",

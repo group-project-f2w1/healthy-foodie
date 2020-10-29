@@ -51,6 +51,7 @@ class UserController {
       const payload = {
         email: req.body.email,
         password: req.body.password,
+        name : req.body.name
       }
       
       const user = await User.create(payload)
@@ -73,11 +74,11 @@ class UserController {
         email: req.body.email,
         password: req.body.password
       }
-  
+      
       let user = await User.findOne({
         where: { email : payload.email }
       })
-
+      
       
       if (!user) {
         
@@ -89,11 +90,13 @@ class UserController {
         next({ status: 401, msg: "Invalid email or password" })
         
       } else {
+        console.log('<< masuk sini')
 
         const access_token = signToken({
           id: user.id,
           email: user.email
         })
+
         
           res.status(200).json({ access_token })
         }

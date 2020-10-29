@@ -321,9 +321,12 @@ function showError(message){
 
 function showRecipe(){
 
-  // / temp recipe /// save bandwith //
+  // temp recipe /// save bandwith //
   checkAdded(tempRecipe.id, (res) => {
-
+    let temp
+    if(res.includes("Add")) {
+      temp = `<a href="#" onclick="addToFavorites('${tempRecipe.id}', '${tempRecipe.title}')" class="btn btn-primary">${res}</a>`
+    } else temp = `<a href="#" onclick="removeFavorites(${tempRecipe.id})" class="btn btn-primary">${res}</a>`
     $('#content-recipe').empty()
     $('#content-recipe').append(`
     
@@ -333,8 +336,7 @@ function showRecipe(){
     <p class="card-text">${tempRecipe.summary}</p>
     
     <a href=${tempRecipe.sourceUrl} target="_blank" class="btn btn-primary">Checkout Full Recipe</a>
-    <a href="#" onclick="addToFavorites('${tempRecipe.id}', '${tempRecipe.title}')" class="btn btn-primary">${res}</a>
-    
+    ${temp}
     </div>
     `)
   })
@@ -354,17 +356,20 @@ function showRecipe(){
 
     foodKeyword = recipe.title    
     search(recipe.title)
-    
-    checkAdded(tempRecipe.id, (res) => {
+    checkAdded(recipe.id, (res) => {
+      let temp
+      if(res.includes("Add")) {
+        temp = `<a href="#" onclick="addToFavorites('${recipe.id}', '${recipe.title}')" class="btn btn-primary">${res}</a>`
+      } else temp = `<a href="#" onclick="removeFavorites(${recipe.id})" class="btn btn-primary">${res}</a>`
       $('#content-recipe').empty()
       $('#content-recipe').append(`
   
       <img class="card-img-top" src="${recipe.image}" alt="Card image cap">
-    <div class="card-body">
-    <h5 class="card-title">${recipe.title}</h5>
-    <p class="card-text">${recipe.summary}</p>
+      <div class="card-body">
+      <h5 class="card-title">${recipe.title}</h5>
+      <p class="card-text">${recipe.summary}</p>
       <a href=${recipe.sourceUrl} target="_blank" class="btn btn-primary">Checkout Full Recipe</a>
-      <a href="#" onclick="addToFavorites('${recipe.id}', '${recipe.title}')" class="btn btn-primary">${res}</a>
+      ${temp}
       </div>
       `)
     })
@@ -394,9 +399,25 @@ function checkAdded(recipeId, cb) {
     response.data.forEach(el => {
       if(el.RecipeId === recipeId) added = true
     })
-    if(added) cb("Remove from favourites")
-    else cb("Added to favourites")
+    if(added === true) cb("Remove from favourites")
+    else cb("Add to favourites")
   })
+}
+
+function removeFavorites(recipeId) {
+  const access_token = localStorage.getItem('access_token')
+
+  $.ajax({
+    method: 'DELETE',
+    url: SERVER + `/recipes/delete/${recipeId}`,
+    headers: {
+      access_token
+    }
+  }).done(_=> {
+    showUserFavorites()
+    showRecipe()
+  })
+  .fail(err => console.log(err.responseJSON.message))
 }
 
 function addToFavorites(id, recipeName){
@@ -414,6 +435,7 @@ function addToFavorites(id, recipeName){
   .done(_=>{
     // console.log('added to favorites')
     showUserFavorites()
+    showRecipe()
   })
   .fail(err => {
     console.log(err.responseJSON.message)
@@ -474,20 +496,22 @@ function showUserFavorites(){
     response.data.forEach( fave => {
       $('#favourite-container').append(`
         <div class = "row mb-3">
-          <div class = "col-2">
-          
-        
-            
-          <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-star-fill" fill="orange" xmlns="http://www.w3.org/2000/svg">
-              <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.283.95l-3.523 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
-            </svg>
-            
 
-
-          </div>
           <div class = "col">
             <p><a href="#" onclick="getFavoriteRecipe(${fave.RecipeId})">${fave.recipeName}</a></p>
           </div>
+          
+          
+          <a href="#" onclick="removeFavorites(${fave.RecipeId})" class="btn btn-primary">
+          <div class = "col">        
+          
+          <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+          <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+          </svg>
+          
+          </div>
+          </a>
         </div>    
       `)
       

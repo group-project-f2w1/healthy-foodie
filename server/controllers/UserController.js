@@ -9,16 +9,21 @@ const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 class UserController {
 
   static googleSignin(req, res, next) {
+
     const token = req.body.token
+    // console.log({token})
+
+    let user
+    let payload
 
     client.verifyIdToken({
         idToken: token,
         audience: process.env.GOOGLE_CLIENT_ID
     })
     .then(ticket=>{
-        const payload = ticket.getPayload()
+        payload = ticket.getPayload()
 
-        const user = {
+        user = {
             name: payload.name,
             email: payload.email,
             password: "123"
@@ -28,21 +33,26 @@ class UserController {
     })
     .then(data => {
         if(data) {
+
+          console.log(data.toJSON())
+          console.log('^----- user sdh ada di database')
+        
           return data
         } else {
+          console.log('user belum ada di database, bikin sekarang')
           return User.create(user)
         }
     })
     .then(data => {
-      console.log(data)
-        // console.log(data.dataValues)
+      console.log(data.toJSON())
+      console.log('^----- data user yang akan dikasi access token')
       const access_token = signToken({
         email:payload.email
       })
       res.status(200).json({access_token, data:data.dataValues.name})
     })
     .catch(err => {
-        // console.log(err, '\n>>>>>>>> google login error')
+        console.log(err, '\n^----- google login error')
         next(err)
     })
   }

@@ -340,7 +340,7 @@ function showRecipe(){
     <p class="card-text">${tempRecipe.summary}</p>
 
     <a href=${tempRecipe.sourceUrl} target="_blank" class="btn btn-primary">Checkout Full Recipe</a>
-    <a href="#" onclick="addToFavorites('${tempRecipe.id}', '${tempRecipe.title}')" class="btn btn-primary">Save to Favorites</a>
+    <a href="#" onclick="addToFavorites('${tempRecipe.id}', '${tempRecipe.title.replace('&','%26')}')" class="btn btn-primary">Save to Favorites</a>
 
     </div>
   `)
@@ -393,7 +393,7 @@ function addToFavorites(id, recipeName){
     showUserFavorites()
   })
   .fail(err => {
-    console.log(err)
+    console.log(err.responseJSON.message)
   })
 }
 

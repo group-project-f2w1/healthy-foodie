@@ -1,6 +1,5 @@
 const axios = require('axios')
-const api = 'https://api.spoonacular.com/recipes/complexSearch'
-const key = process.env.SPOONACULAR_KEY
+
 
 const { FavoriteRecipe } = require('../models')
 
@@ -11,33 +10,52 @@ class RecipeController {
   static async favorites (req, res, next){
 
 
-    let city = req.query.city // default
-    // city bisa di dapat di req body kiriman client
+    try {
+      const UserId = verifyToken(req.headers.access_token).id
 
+      const favorites = await FavoriteRecipe.findAll({
+        where: { UserId },
+      })
+
+      favorites = favorites.map(fav => fav.recipe_name)
+
+      res.status(200).json({ data: favorites })
+
+
+    } catch (error) {
+      next(error)
+    }
+
+  
+  }
+
+  static async info (req, res, next) {
+
+    let api = `https://api.spoonacular.com/recipes/${id}/information`
+    
     axios({
       method: 'get',
-      url: api + '/cities',
+      url: api,
       params: {
-        q: city
+        apiKey: process.env.SPOONACULAR_KEY,
       },
-      headers: {
-        "user-key" : key
-      }
     })
       .then(response => {
-        //console.log(response.data.id.location_suggestion);
-        res.status(200).json(
-          {
-            id: response.data.location_suggestions[0].id,
-            name: response.data.location_suggestions[0].name
-          })
+        
+        console.log(response.data)
+        
+        res.status(200).json(response.data)
       })
       .catch(err => {
-        res.status(500).send(err)
+        next(err)
       })
   }
+
   static async search (req, res, next){
 
+    const api = 'https://api.spoonacular.com/recipes/complexSearch'
+    const apiSimple = 'https://api.spoonacular.com/recipes/search'
+  
     
     let food = req.query.food
    
@@ -45,7 +63,7 @@ class RecipeController {
       method: 'get',
       url: api,
       params: {
-        apiKey: key,
+        apiKey: process.env.SPOONACULAR_KEY,
         query: food,     
         addRecipeInformation: true,
       },

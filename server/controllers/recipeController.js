@@ -2,6 +2,10 @@ const axios = require('axios')
 const api = 'https://api.spoonacular.com/recipes/complexSearch'
 const key = process.env.SPOONACULAR_KEY
 
+const { FavoriteRecipe } = require('../models')
+
+const {verifyToken} = require('../helpers/jwt')
+
 class RecipeController {
 
   static async favorites (req, res, next){
@@ -59,10 +63,67 @@ class RecipeController {
 
   static async addToFavorites(req, res, next) {
 
+    try {
+      const UserId = verifyToken(req.headers.access_token).id
+      const { RecipeId } = req.params
+
+      // console.log({UserId, RecipeId})
+
+      const hadBeenAdded = await FavoriteRecipe.findOne({
+        where: {UserId, RecipeId}
+      })
+      if (hadBeenAdded) {
+        res.status(400).json({ 
+          message: 'Recipe had already been added to favorites'
+        })
+      } else {
+        const favorite = await FavoriteRecipe.create({UserId, RecipeId})
+  
+        // console.log(favorite.toJSON(), '\n ^----- added to favorite')
+  
+        res.status(201).json({
+          message: 'Recipe added to favorites'
+
+        })
+  
+      }
+    } catch (error) {
+      next(error)
+    }
+
   }
 
   static async delete(req, res, next) {
+    try {
 
+      const UserId = verifyToken(req.headers.access_token).id
+      const { RecipeId } = req.params
+
+      console.log({UserId, RecipeId})
+
+      const favorite = await FavoriteRecipe.findOne({
+        where: {UserId, RecipeId}
+      })
+
+      if (favorite) {
+        console.log(favorite.toJSON())
+
+        await FavoriteRecipe.destroy({
+          where: {UserId, RecipeId}
+        })
+
+        res.status(201).json({
+          message: 'Successfully deleted favorite item'
+        })
+      } else {
+        res.status(201).json({
+          message: 'Cannot find favorite item'
+        })
+      }
+
+    } catch (error) {
+      next(error)
+    }
   }
 }
 

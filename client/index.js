@@ -153,11 +153,36 @@ let googleUser = {
   avatarUrl : 'https://lh3.googleusercontent.com/a-/AOh14GgezQV4qqXZEXfIRdIYLkh83P8Krg4ONbXo77HQ0w=s96-c'
 }
 
+let zomato = [
+  {
+    id: "18665235",
+    name: "Dope Burger & Co.",
+    location: "Jl. Teuku Cik Ditiro No. 25, Menteng, Jakarta",
+    url: "https://www.zomato.com/jakarta/dope-burger-co-menteng?utm_source=api_basic_user&utm_medium=api&utm_campaign=v2.1",
+    thumnail: "https://b.zmtcdn.com/data/pictures/5/18665235/91953fdc5136be707f0ac227fc4fdb5e.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A",
+    img: "https://b.zmtcdn.com/data/pictures/5/18665235/91953fdc5136be707f0ac227fc4fdb5e.jpg"
+  },
+  {
+    id: "18665235",
+    name: "Dope Burger & Co.",
+    location: "Jl. Teuku Cik Ditiro No. 25, Menteng, Jakarta",
+    url: "https://www.zomato.com/jakarta/dope-burger-co-menteng?utm_source=api_basic_user&utm_medium=api&utm_campaign=v2.1",
+    thumnail: "https://b.zmtcdn.com/data/pictures/5/18665235/91953fdc5136be707f0ac227fc4fdb5e.jpg?fit=around%7C200%3A200&crop=200%3A200%3B%2A%2C%2A",
+    img: "https://b.zmtcdn.com/data/pictures/5/18665235/91953fdc5136be707f0ac227fc4fdb5e.jpg"
+  }
+]
+
 $(document).ready(function(){
   console.log('document is ready 🔥🔥')
   console.log(recipe.title)
+  const token = localStorage.getItem('access_token')
+  
+  if(token){
+    afterSignIn()
+  } else {
+    init()
 
-  init()
+  }
 })
 
 function init(){
@@ -175,9 +200,15 @@ function afterSignIn(){
   $('#page_home').show()
   $('body').css('background-image', 'none')
 
+  showAllHome()
+  // showUserProfile(googleUser)
+}
+
+function showAllHome(){
   showRecipe()
   showUserFavorites()
-  // showUserProfile(googleUser)
+  showRestaurants()
+  showUserProfile()
 }
 
 function afterSignOut(){
@@ -194,13 +225,6 @@ function signIn(e){
   let email = $('#signin-email').val()
   let password = $('#signin-password').val()
 
-  /**
-   * TODO : 
-   *  Kirim ke backend untuk authenticate
-   * NEED : 
-   *  Route untuk login
-   */
-
    $.ajax({
      method : 'POST',
      url : SERVER + '/signin',
@@ -210,7 +234,7 @@ function signIn(e){
      }
    })
     .done(response => {
-      console.log(response)
+
     const access_token = response.access_token
     localStorage.setItem('access_token', access_token)
     afterSignIn()
@@ -235,13 +259,6 @@ function signUp(){
   console.log('user trying to register')
   console.log(email, password)
 
-  /**
-   * TODO : 
-   *  Kirim ke backend untuk register
-   * NEED :
-   *  Route untuk register
-   */
-
   $.ajax({
     method : 'POST',
     url : SERVER + '/signup',
@@ -264,29 +281,21 @@ function signUp(){
 
 }
 
-function signGoogle(){
- // var profile = googleUser.getBasicProfile();
-  // console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-  // console.log('Name: ' + profile.getName());
-  // console.log('Image URL: ' + profile.getImageUrl());
-  // console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
-}
-
 async function onSignIn(googleUser) {
 
-
   let google_user_token = await googleUser.getAuthResponse().id_token;
-
-
-   $.ajax({
+ 
+  $.ajax({
      method : 'POST',
      url : SERVER + '/googleSignin',
      data : {
        token : google_user_token
      }
    }).done((data)=>{
-    console.log('signin request success!!')
-    console.log(data)
+
+    localStorage.setItem('access_token', data.access_token)
+    
+    console.log(localStorage.getItem('user_data'))
     afterSignIn()
 
    }).fail((error)=>{
@@ -314,7 +323,6 @@ function showError(message){
 }
 
 function showRecipe(){
-  console.log('show recipe invoked')
 
   $('#content-recipe').empty()
   $('#content-recipe').append(`
@@ -324,22 +332,64 @@ function showRecipe(){
     <h5 class="card-title">${recipe.title}</h5>
     <p class="card-text">${recipe.summary}</p>
 
-    <a href="#" class="btn btn-primary">Go somewhere</a>
+    <a href=${recipe.sourceUrl} target="_blank" class="btn btn-primary">Checkout Full Recipe</a>
+    <a href="#" onclick="addToFavorites(${recipe.id})" class="btn btn-primary">Save to Favorites</a>
+    </div>
+  `)
+}
+
+function addToFavorites(id){
+  const recipeId = id;
+
+  $.ajax({
+    method : 'POST',
+    url : SERVER + `/recipes/addToFavorites/${recipeId}`
+  })
+  .done(_=>{
+    showUserFavorites()
+  })
+  .fail(err => {
+    console.log(err)
+  })
+
+}
+
+
+function showUserProfile(){
+  let access_token = localStorage.getItem('access_token')
+
+  $.ajax({
+    method : 'GET',
+    url : SERVER + '/findOne',
+    headers : {
+      access_token
+    }
+  })
+  .done(response => {
+
+    let profile_picture = response.avatarUrl || './img/profile_pic.jpg'
+
+    $('#user-container').empty()
+    $('#user-container').append(`
+      <div class="card mb-3" id="content-profile">
+      <div class="card-body">
+        <div class ='avatar-container mb-3'>
+          <img class='avatar' src = ${profile_picture}>
+        </div>
+        <h5 class="card-title">Welcome back, ${response.name}!</h5>
+        <a href="" class="btn btn-sm btn-primary">Favourite this Recipe</a>
+      </div>
     </div>
     `)
-    // <p class="card-text">${recipe.analyzedInstructions}</p>
+
+  })
+  .fail(error => {
+    console.log(error)
+  })
+
+
 }
 
-
-function showUserProfile(user){
-  let name = user.name
-  let avatarURL = user.avatarURL
-
-  $('#content-profile').empty()
-  $('#content-profile').append(`
-  `)
-
-}
 
 
 function showUserFavorites(){
@@ -376,6 +426,34 @@ function showUserFavorites(){
   })
 }
 
+
+function showRestaurants(){
+
+
+  $('#restaurants-container').empty()
+
+  zomato.forEach(restaurant => {
+    let gMapURL = (`https://www.google.com/maps/search/?api=1&query=${restaurant.location}`)
+    $('#restaurants-container').append(`
+      <div class="card mb-3">
+      <img class="card-img-top" src=${restaurant.img} alt="Card image cap">
+      <div class="card-body">
+  
+        <h5 class="card-title"><a href = ${restaurant.url} target="_blank">${restaurant.name}</a></h5>
+        <p class="card-text"><a href = ${gMapURL} target="_blank">${restaurant.location}</a></p>
+  
+      </div>
+    </div>
+    `)
+  })
+
+}
+
+function searchRestaurant(){
+  let city = $('#search-bar').val().toLowerCase()
+
+  console.log(city)
+}
 
 function signOut() {
   var auth2 = gapi.auth2.getAuthInstance();

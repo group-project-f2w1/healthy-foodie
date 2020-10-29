@@ -322,20 +322,22 @@ function showError(message){
 function showRecipe(){
 
   // / temp recipe /// save bandwith //
+  checkAdded(tempRecipe.id, (res) => {
 
-  $('#content-recipe').empty()
-  $('#content-recipe').append(`
-
-  <img class="card-img-top" src="${tempRecipe.image}" alt="Card image cap">
-  <div class="card-body">
+    $('#content-recipe').empty()
+    $('#content-recipe').append(`
+    
+    <img class="card-img-top" src="${tempRecipe.image}" alt="Card image cap">
+    <div class="card-body" id="recipe">
     <h5 class="card-title">${tempRecipe.title}</h5>
     <p class="card-text">${tempRecipe.summary}</p>
-
+    
     <a href=${tempRecipe.sourceUrl} target="_blank" class="btn btn-primary">Checkout Full Recipe</a>
-    <a href="#" onclick="addToFavorites('${tempRecipe.id}', '${tempRecipe.title}')" class="btn btn-primary">Save to Favorites</a>
-
+    <a href="#" onclick="addToFavorites('${tempRecipe.id}', '${tempRecipe.title}')" class="btn btn-primary">${res}</a>
+    
     </div>
-  `)
+    `)
+  })
 
   // =========== //
   // Real Recipe //
@@ -353,22 +355,48 @@ function showRecipe(){
     foodKeyword = recipe.title    
     search(recipe.title)
     
-    $('#content-recipe').empty()
-    $('#content-recipe').append(`
+    checkAdded(tempRecipe.id, (res) => {
+      $('#content-recipe').empty()
+      $('#content-recipe').append(`
   
-    <img class="card-img-top" src="${recipe.image}" alt="Card image cap">
+      <img class="card-img-top" src="${recipe.image}" alt="Card image cap">
     <div class="card-body">
-      <h5 class="card-title">${recipe.title}</h5>
-      <p class="card-text">${recipe.summary}</p>
+    <h5 class="card-title">${recipe.title}</h5>
+    <p class="card-text">${recipe.summary}</p>
       <a href=${recipe.sourceUrl} target="_blank" class="btn btn-primary">Checkout Full Recipe</a>
-      <a href="#" onclick="addToFavorites('${recipe.id}', '${recipe.title}')" class="btn btn-primary">Save to Favorites</a>
+      <a href="#" onclick="addToFavorites('${recipe.id}', '${recipe.title}')" class="btn btn-primary">${res}</a>
       </div>
-    `)    
+      `)
+    })
   }).fail(response => {
     console.log(response.responseJSON.message)
   })
 
 
+}
+
+
+// $('#recipe').on('')
+function checkAdded(recipeId, cb) {
+    
+    const access_token = localStorage.getItem('access_token')
+    
+    $.ajax({
+      method : 'GET',
+      url : SERVER + '/recipes/favorites',
+      headers : {
+        access_token
+      }
+    })
+  .done(response => {
+    let added = false
+    console.log(response.data, 'sudah keluar') 
+    response.data.forEach(el => {
+      if(el.RecipeId === recipeId) added = true
+    })
+    if(added) cb("Remove from favourites")
+    else cb("Added to favourites")
+  })
 }
 
 function addToFavorites(id, recipeName){
@@ -412,7 +440,7 @@ function showUserProfile(){
       <div class="card mb-3" id="content-profile">
       <div class="card-body">
         <div class ='avatar-container mb-3'>
-          <img class='avatar' src = ${profile_picture}>
+          <img class='avatar' src = ${profile_picture} >
         </div>
         <h5 class="card-title" style="text-align:center;">Welcome back, ${response.name}!</h5>
       </div>
@@ -440,7 +468,7 @@ function showUserFavorites(){
     }
   }).done(response => {
 
-    // console.log(response.data[0])
+    console.log(response.data, "dari sini")
     $('#favourite-container').empty()
 
     response.data.forEach( fave => {

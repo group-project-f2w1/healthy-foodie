@@ -152,7 +152,7 @@ let tempRecipe = {
 
 $(document).ready(function(){
   console.log('document is ready 🔥🔥')
-  $.getScript('./search.js')
+  // $.getScript('./search.js')
   const token = localStorage.getItem('access_token')
   
   
@@ -203,18 +203,18 @@ function afterSignOut(){
 
 function getBGPicture(){
 
-  $('body').css('background-image', "url('https://picsum.photos/1600/1080?grayscale&blur=2')")
-  // $.ajax({
-  //   method : 'GET',
-  //   url : SERVER + '/img/random',
+  $.ajax({
+    method : 'GET',
+    url : SERVER + '/img/random',
+    
+  }).done(response => {
 
-  // }).done(response => {
-  //   console.log(response)
-  //     $('body').css('background-image', `url('${response.imgUrl.html}')`)
+    $('body').css('background-image', "url('https://picsum.photos/1600/1080?grayscale&blur=2')")
+    // $('body').css('background-image', `url('${response.imgUrl.html}')`)
 
-  // }).fail(err => {
-  //   console.log(err)
-  // })
+  }).fail(err => {
+    console.log(err)
+  })
 }
 
 function signIn(e){
@@ -323,19 +323,19 @@ function showRecipe(){
 
   // / temp recipe /// save bandwith //
 
-  $('#content-recipe').empty()
-  $('#content-recipe').append(`
+  // $('#content-recipe').empty()
+  // $('#content-recipe').append(`
 
-  <img class="card-img-top" src="${tempRecipe.image}" alt="Card image cap">
-  <div class="card-body">
-    <h5 class="card-title">${tempRecipe.title}</h5>
-    <p class="card-text">${tempRecipe.summary}</p>
+  // <img class="card-img-top" src="${tempRecipe.image}" alt="Card image cap">
+  // <div class="card-body">
+  //   <h5 class="card-title">${tempRecipe.title}</h5>
+  //   <p class="card-text">${tempRecipe.summary}</p>
 
-    <a href=${tempRecipe.sourceUrl} target="_blank" class="btn btn-primary">Checkout Full Recipe</a>
-    <a href="#" onclick="addToFavorites('${tempRecipe.id}', '${tempRecipe.title}')" class="btn btn-primary">Save to Favorites</a>
+  //   <a href=${tempRecipe.sourceUrl} target="_blank" class="btn btn-primary">Checkout Full Recipe</a>
+  //   <a href="#" onclick="addToFavorites('${tempRecipe.id}', '${tempRecipe.title}')" class="btn btn-primary">Save to Favorites</a>
 
-    </div>
-  `)
+  //   </div>
+  // `)
 
   // =========== //
   // Real Recipe //

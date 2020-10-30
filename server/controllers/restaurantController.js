@@ -1,6 +1,6 @@
 const axios = require('axios')
-const api = 'https://developers.zomato.com/api/v2.1'
-const key = '2e991f7ad83dc9ab6b6fe7178f3673a3'
+const api = process.env.API_ZOMATO
+const key = process.env.ZOMATO_KEY
 
 class RestauranController {
 
@@ -21,15 +21,23 @@ class RestauranController {
       }
     })
       .then(response => {
-        //console.log(response.data.id.location_suggestion);
-        res.status(200).json(
-          {
-            id: response.data.location_suggestions[0].id,
-            name: response.data.location_suggestions[0].name
-          })
+        console.log(response.data.location_suggestions.length === 0);
+        
+        if(response.data.location_suggestions.length === 0){
+          
+          throw {status: 404, msg: `City haven't registered yet in our database`}
+        }
+        else{
+          return res.status(200).json(
+            {
+              id: response.data.location_suggestions[0].id,
+              name: response.data.location_suggestions[0].name
+            })
+        }
+        
       })
       .catch(err => {
-        res.status(500).send(err)
+        next(err)
       })
   }
   static searchRestaurant (req, res, next){
@@ -65,7 +73,7 @@ class RestauranController {
         res.json(restaurants)
       })
       .catch(err => {
-        res.send(err)
+        next(err)
       })
   }
 }

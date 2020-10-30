@@ -1,7 +1,7 @@
 module.exports = (err, req, res, next) => {
   
   let status = err.status || 500
-  let message = err.msg || 'Internal Server Error'
+  let message = err.message || 'Internal Server Error'
 
   if (err.name) {
 

@@ -45,9 +45,11 @@ class UserController {
     })
     .then(data => {
       // console.log(data.toJSON())
+      // console.log({id: data.id, email: data.email})
       // console.log('^----- data user yang akan dikasi access token')
       const access_token = signToken({
-        email:payload.email
+        id: data.id,
+        email:data.email
       })
       res.status(200).json({access_token})
     })

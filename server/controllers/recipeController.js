@@ -9,14 +9,20 @@ class RecipeController {
 
   static async favorites (req, res, next){
 
+    console.log('favorites triggered')
+
 
     try {
-      const UserId = verifyToken(req.headers.access_token).id
+
+      // console.log(req.headers)
+      const decoded = verifyToken(req.headers.access_token)
+
+      console.log({decoded})
 
       const favorites = await FavoriteRecipe.findAll({
-        where: { UserId },
+        where: { UserId: decoded.id },
       })
-      console.log(favorites)
+      // console.log(favorites)
       
       res.status(200).json({ data: favorites })
 
@@ -57,6 +63,8 @@ class RecipeController {
   
     
     let food = req.query.food
+
+    console.log({food})
    
     axios({
       method: 'get',
@@ -69,11 +77,12 @@ class RecipeController {
     })
       .then(response => {
         
-        console.log(response.data)
+        console.log({response})
        
         res.status(200).json(response.data)
       })
       .catch(err => {
+        console.log({err})
         next(err)
       })
   }
@@ -90,7 +99,8 @@ class RecipeController {
         where: {UserId, RecipeId}
       })
       if (hadBeenAdded) {
-        res.status(400).json({ 
+        next({
+          status: 400, 
           message: 'Recipe had already been added to favorites'
         })
       } else {

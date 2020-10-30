@@ -321,21 +321,21 @@ function showError(message){
 
 function showRecipe(){
 
-  /// temp recipe /// save bandwith //
+  // / temp recipe /// save bandwith //
 
-  // $('#content-recipe').empty()
-  // $('#content-recipe').append(`
+  $('#content-recipe').empty()
+  $('#content-recipe').append(`
 
-  // <img class="card-img-top" src="${tempRecipe.image}" alt="Card image cap">
-  // <div class="card-body">
-  //   <h5 class="card-title">${tempRecipe.title}</h5>
-  //   <p class="card-text">${tempRecipe.summary}</p>
+  <img class="card-img-top" src="${tempRecipe.image}" alt="Card image cap">
+  <div class="card-body">
+    <h5 class="card-title">${tempRecipe.title}</h5>
+    <p class="card-text">${tempRecipe.summary}</p>
 
-  //   <a href=${tempRecipe.sourceUrl} target="_blank" class="btn btn-primary">Checkout Full Recipe</a>
-  //   <a href="#" onclick="addToFavorites('${tempRecipe.id}', '${tempRecipe.title}')" class="btn btn-primary">Save to Favorites</a>
+    <a href=${tempRecipe.sourceUrl} target="_blank" class="btn btn-primary">Checkout Full Recipe</a>
+    <a href="#" onclick="addToFavorites('${tempRecipe.id}', '${tempRecipe.title}')" class="btn btn-primary">Save to Favorites</a>
 
-  //   </div>
-  // `)
+    </div>
+  `)
 
   // =========== //
   // Real Recipe //
@@ -365,7 +365,7 @@ function showRecipe(){
       </div>
     `)    
   }).fail(response => {
-    console.log(response)
+    console.log(response.responseJSON.message)
   })
 
 
@@ -378,7 +378,7 @@ function addToFavorites(id, recipeName){
   const access_token = localStorage.getItem('access_token')
   $.ajax({
     method : 'GET',
-    url : SERVER + `/recipes/addToFavorites?RecipeId=${recipeId}&recipeName=${recipeName}`,
+    url : SERVER + `/recipes/addToFavorites?RecipeId=${recipeId}&recipeName=${recipeName.replace('&','%26')}`,
     headers : {
       access_token
     }
@@ -388,7 +388,7 @@ function addToFavorites(id, recipeName){
     showUserFavorites()
   })
   .fail(err => {
-    console.log(err)
+    console.log(err.responseJSON.message)
   })
 }
 

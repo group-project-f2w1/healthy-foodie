@@ -12,7 +12,7 @@ module.exports = (err, req, res, next) => {
       
       
       status = 400
-      message = err.errors.map(error => error.message).join(', ')
+      message = err.errors?.map(error => error.message).join(', ')
       console.log(message);
       
     }

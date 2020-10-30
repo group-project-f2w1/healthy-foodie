@@ -1,60 +1,78 @@
 const { User } = require('../models/')
 
 const { comparePassword } = require('../helpers/bcrypt')
-const { signToken } = require('../helpers/jwt')
+const { signToken, verifyToken } = require('../helpers/jwt')
 
 const {OAuth2Client} = require('google-auth-library');
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 class UserController {
 
-  static googleSignin(req, res, next) {
+  static async googleSignin(req, res, next) {
 
     const token = req.body.token
-    // console.log({token})
+    console.log({token})
 
-    let user
-    let payload
 
-    client.verifyIdToken({
+    try {
+      const ticket = await client.verifyIdToken({
         idToken: token,
         audience: process.env.GOOGLE_CLIENT_ID
     })
-    .then(ticket=>{
-        payload = ticket.getPayload()
 
-        user = {
-            name: payload.name,
-            email: payload.email,
-            password: "123"
-        }
+    const payload = ticket.getPayload()
 
-        return User.findOne({where : { email: user.email }})
-    })
-    .then(data => {
-        if(data) {
+    // console.log({payload})
 
-          console.log(data.toJSON())
-          console.log('^----- user sdh ada di database')
-        
-          return data
-        } else {
-          console.log('user belum ada di database, bikin sekarang')
-          return User.create(user)
-        }
-    })
-    .then(data => {
-      console.log(data.toJSON())
-      console.log('^----- data user yang akan dikasi access token')
+    let avatarUrl = payload.picture
+    if (payload.picture) {
+      avatarUrl = `https://robohash.org/${payload.name}`
+    }
+    
+    let user = {
+      name: payload.name,
+      email: payload.email,
+      password: "123",
+      avatarUrl
+    }
+    
+    
+    // console.log({user})
+
+    const data = await User.findOne({where : { email: user.email }})
+
+    console.log(data.toJSON())
+    
+    if (data) {
+
+      // console.log(data.toJSON())
+      // console.log('^----- user sdh ada di database')
       const access_token = signToken({
-        email:payload.email
+        id: data.id,
+        email:data.email
       })
-      res.status(200).json({access_token, data:data.dataValues.name})
-    })
-    .catch(err => {
-        console.log(err, '\n^----- google login error')
-        next(err)
-    })
+      res.status(200).json({access_token})
+    } else {
+    console.log('user belum ada di database, bikin sekarang')
+      const newUser = await User.create(user)
+
+      // console.log(newUser.toJSON())
+      // console.log({id: newUser.id, email: newUser.email})
+      // console.log('^----- data user yang akan dikasi access token')
+      const access_token = signToken({
+        id: newUser.id,
+        email:newUser.email
+      })
+      res.status(200).json({access_token})
+
+
+    }
+
+    } catch (error) {
+      console.log(error, '\n^----- google login error')
+      next(error)
+    }
+
   }
 
   static async signup(req, res, next) {
@@ -125,6 +143,27 @@ class UserController {
 
   static async signout(req, res, next) {
 
+  }
+
+  static async findOne(req,res,next){
+    try {
+      const token = req.headers.access_token
+      const email = verifyToken(token).email
+      
+      const userData = await User.findOne({
+        where : { email }
+      })
+
+      const returnedData = {
+        name : userData.name,
+        avatarUrl : userData.avatarUrl
+      }
+
+      res.status(200).json(returnedData)
+
+    } catch (err) {
+      next(err)
+    }
   }
 
 }

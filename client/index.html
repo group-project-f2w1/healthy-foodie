@@ -13,7 +13,7 @@
 </head>
 
 <body>
-  <div id="error" class="alert alert-danger" role="alert">
+  <div id="error" class="alert alert-danger" role="alert">ne
     
   </div>
 
@@ -24,21 +24,17 @@
       <div class = "min-height-L align-items-center">
         <div class = "row down-M">
           <div class="col-12 text-center text-white" >
-            <h1 style="font-size: 50px;">Placeholder header</h3>
           </div>
-
         </div>
         
         <div class = "row" >
-          <div class="col">
-
-          </div>
+          <div class="col"></div>
     
           <div class="col-5 ">
     
             <div class="card">
               <!-- <h5 class = "card-header">Sign Up</h5> -->
-              <div class="card-body">
+              <div class="card-body drop-shadow">
               
                 <form>
     
@@ -57,13 +53,10 @@
                   </div>
                   <br>
                   <h6 class="text-left font-weight-light"><a href="#" data-toggle="modal" data-target="#modal_register">New? Register Here</a></h6>
-                  <h6 class="text-left font-weight-light"><a href="#" onclick="signOut()">Logout</a></h6>
-                  <h6 class="text-left font-weight-light"><a href="#" onclick="afterSignIn()">Bypass Login</a></h6>
-    
+
                 
               </div>
-      
-      
+
             </div>
           </div>
           <div class="col"></div>    
@@ -77,6 +70,7 @@
 
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    
     <div class="container">
       <a class="navbar-brand" href="#">HF</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,71 +78,87 @@
       </button>
   
       <div class="collapse navbar-collapse ">
-        <ul class="navbar-nav" style="max-width: 800px; width: 100%; justify-content: space-between;">
+        <ul class="navbar-nav mr-auto">
   
-          <li class="nav-item mr-lg-5">
-            <a class="nav-link" href="">Next Recipe</a>
+          <li class="nav-item">
+            <a class="nav-link" onclick ="showRecipe()" href="#">Next Recipe</a>
           </li>
+
+          <!-- Debug Links -->
+
+          <!-- <li class="nav-item">
+            <a class="nav-link" onclick ="testSearch()" href="#">GET Restaurant</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link"  href="#">Next Recipe</a>
+          </li> -->
+
+          <!-- END Debug Links -->
 
           <li class="nav-item">
             <a class="nav-link" id = "sign-out" onclick = "signOut()"href="#">Sign Out</a>
           </li>
         </ul>
+
+        <div class="form-inline my-2 my-lg-0">
+          <input id='search-food' class="form-control mr-sm-2" type="search" placeholder="What do you want to eat today?" aria-label="Search">
+          <button class="btn btn-outline-success my-2 my-sm-0" type="submit" onclick="searchFood()">Search</button>
+        </div>
+
+        <!-- <div class="form-inline my-2 my-lg-0">
+          <input id='search-bar' class="form-control mr-sm-2" type="search" placeholder="Your City" aria-label="Search">
+          <button class="btn btn-outline-success my-2 my-sm-0" type="submit" onclick="searchRestaurant()">Search</button>
+        </div> -->
       </div>
 
     </div>
 
   </nav>
 
+
+
   <!-- Home page -->
-  <div class="container my-lg">
+  <div id="home-content" class="container my-lg">
     <div class = "row mt-5">
       <div class="col-3">
 
-        <div class="card mb-3" id="content-profile">
-          <div class="card-body">
-            <div class ='avatar-container mb-3'>
-              <img class='avatar' src = "https://lh3.googleusercontent.com/a-/AOh14GgezQV4qqXZEXfIRdIYLkh83P8Krg4ONbXo77HQ0w=s96-c">
-            </div>
-            <h5 class="card-title">Welcome back, Deo Mareza!</h5>
-            <a href="" class="btn btn-sm btn-primary">Favourite this Recipe</a>
+        <div id = "user-container">
+          <!-- This section will be appended with jQuery showUserProfile() -->
+        </div>
+        
+        <div id='favourite-container'>
+          <!-- This section will be appended with jQuery showFavourites() -->
+        </div>
+        
+      </div>
+
+      <div class="col-9" id="search-results" style="display:none">
+        <!-- This section will be appended with jQuery showFoodSearch() -->
+      </div>
+
+        <div class="col-6">
+          
+          <div class="card" id="content-recipe">
+            <!-- This section will be appended with jQuery showRecipe() -->
+          </div>
+          
+        </div>
+        
+        <div class="col-3">
+          
+          <p class="title-section">Restaurants Nearby</p>
+          
+          <div id = 'restaurants-container'>       
+            <!-- This section will be appended with jQuery showRestaurants() -->
+          </div>
+          
+          <div id = 'restaurants'>
+            
           </div>
         </div>
-
-        <div id='favourite-container'>
-
           
 
-        </div>
-
-      </div>
-      <div class="col-6">
-
-        <div class="card" id="content-recipe">
-          <!-- This section will be appended with jQuery showRecipe() -->
-          <!-- <img class="card-img-top" src="" alt="Card image cap">
-          <div class="card-body">
-            <h5 class="card-title">Card title</h5>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
-          </div> -->
-
-        </div>
-
-      </div>
-      <div class="col-3">
-
-        <h1>Zomato Bar</h1>
-        <div class="card">
-          <img class="card-img-top" src="" alt="Card image cap">
-          <div class="card-body">
-            <h5 class="card-title">Card title</h5>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            <a href="" class="btn btn-primary">Go somewhere</a>
-          </div>
-        </div>
-
-      </div>
     </div>
 
   </div>
@@ -193,6 +203,8 @@
         </div>
       </div>
     </div>
+
+
 
   <!-- jQuery and JS bundle w/ Popper.js -->
   <script

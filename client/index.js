@@ -1,7 +1,8 @@
 const SERVER = 'http://localhost:3000';
 // const {OAuth2Client} = require('google-auth-library');
 // const client = new OAuth2Client(CLIENT_ID);
-let recipe = {
+let foodKeyword = 'health'
+let tempRecipe = {
   vegetarian: true,
   vegan: false,
   glutenFree: false,
@@ -148,25 +149,29 @@ let recipe = {
       'https://spoonacular.com/cracked-wheat-salad-with-dates-tahini-yogurt-640338',
 }
 
-let googleUser = {
-  name : 'Deo Mareza',
-  avatarUrl : 'https://lh3.googleusercontent.com/a-/AOh14GgezQV4qqXZEXfIRdIYLkh83P8Krg4ONbXo77HQ0w=s96-c'
-}
 
 $(document).ready(function(){
   console.log('document is ready 🔥🔥')
-  console.log(recipe.title)
+  // $.getScript('./search.js')
+  const token = localStorage.getItem('access_token')
+  
+  
 
-  init()
+  if(token){
+    afterSignIn()
+
+  } else {
+    init()
+
+  }
 })
 
 function init(){
   $('#page_login').show()
   $('#page_home').hide()
   $('#error').hide()
+  getBGPicture()
 
-  // changing BG ↘
-  // $('body').css('background-image', "url('https://mdbootstrap.com/img/Photos/Horizontal/Nature/full page/img(20).jpg')")
 }
 
 function afterSignIn(){
@@ -175,31 +180,47 @@ function afterSignIn(){
   $('#page_home').show()
   $('body').css('background-image', 'none')
 
+  showAllHome()
+  // showUserProfile(googleUser)
+}
+
+function showAllHome(){
   showRecipe()
   showUserFavorites()
-  // showUserProfile(googleUser)
+  showUserProfile()
+
+  // search(foodKeyword)
+
 }
 
 function afterSignOut(){
   $('#error').hide()
   $('#page_home').hide()
   $('#page_login').show()
-  $('body').css('background-image', "url('https://mdbootstrap.com/img/Photos/Horizontal/Nature/full page/img(20).jpg')")
 
+  getBGPicture()
 }
 
+function getBGPicture(){
+
+  $('body').css('background-image', "url('https://picsum.photos/1600/1080?grayscale&blur=2')")
+  // $.ajax({
+  //   method : 'GET',
+  //   url : SERVER + '/img/random',
+
+  // }).done(response => {
+  //   console.log(response)
+  //     $('body').css('background-image', `url('${response.imgUrl.html}')`)
+
+  // }).fail(err => {
+  //   console.log(err)
+  // })
+}
 
 function signIn(e){
   e.preventDefault()
   let email = $('#signin-email').val()
   let password = $('#signin-password').val()
-
-  /**
-   * TODO : 
-   *  Kirim ke backend untuk authenticate
-   * NEED : 
-   *  Route untuk login
-   */
 
    $.ajax({
      method : 'POST',
@@ -210,7 +231,7 @@ function signIn(e){
      }
    })
     .done(response => {
-      console.log(response)
+
     const access_token = response.access_token
     localStorage.setItem('access_token', access_token)
     afterSignIn()
@@ -235,13 +256,6 @@ function signUp(){
   console.log('user trying to register')
   console.log(email, password)
 
-  /**
-   * TODO : 
-   *  Kirim ke backend untuk register
-   * NEED :
-   *  Route untuk register
-   */
-
   $.ajax({
     method : 'POST',
     url : SERVER + '/signup',
@@ -265,29 +279,20 @@ function signUp(){
 
 }
 
-function signGoogle(){
- // var profile = googleUser.getBasicProfile();
-  // console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-  // console.log('Name: ' + profile.getName());
-  // console.log('Image URL: ' + profile.getImageUrl());
-  // console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
-}
-
 async function onSignIn(googleUser) {
 
-
   let google_user_token = await googleUser.getAuthResponse().id_token;
-
-
-   $.ajax({
+ 
+  $.ajax({
      method : 'POST',
      url : SERVER + '/googleSignin',
      data : {
        token : google_user_token
      }
    }).done((data)=>{
-    console.log('signin request success!!')
-    console.log(data)
+
+    localStorage.setItem('access_token', data.access_token)
+    
     afterSignIn()
 
    }).fail((error)=>{
@@ -315,68 +320,439 @@ function showError(message){
 }
 
 function showRecipe(){
-  console.log('show recipe invoked')
 
+  // temp recipe /// save bandwith //
+  // checkAdded(tempRecipe.id, (res) => {
+  //   let temp
+  //   let fav = ""
+  //   $('#content-recipe').empty()
+
+  //   if(res.includes("Add")) {
+  //     temp = `<a href="#" id="toggle-favorite-button" onclick="toggleFavorite('${tempRecipe.id}', '${tempRecipe.title}')" class="btn btn-primary">${res}</a>`
+  //   } else {
+  //     // $('#content-recipe').append(`<h1>Favorites</h1>`)
+  //     fav = `
+  //     <div class="btn card-title">
+  //     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-heart" fill="yellow" xmlns="http://www.w3.org/2000/svg">
+  //     <path fill-rule="evenodd" d="M8 2.748l-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"/>
+  //     </svg>
+  //     </div>
+  //     `
+  //     temp = `<button id="toggle-favorite-button" onclick="toggleFavorite(${tempRecipe.id})" class="btn btn-danger">${res}</button>`
+  //   }
+    // $('#content-recipe').append(`
+
+    
+    // <img class="card-img-top" src="${tempRecipe.image}" alt="Card image cap">
+    //   ${fav}
+    // <div class="card-body" id="recipe">
+    // <h5 class="card-title">${tempRecipe.title}</h5>
+    // <p class="card-text">${tempRecipe.summary}</p>
+    
+    // <a href=${tempRecipe.sourceUrl} target="_blank" class="btn btn-primary">Checkout Full Recipe</a>
+    // ${temp}
+    // </div>
+    // `)
+  // })
+
+  // =========== //
+  // Real Recipe //
+
+  // Loader animation
   $('#content-recipe').empty()
   $('#content-recipe').append(`
-
-  <img class="card-img-top" src="${recipe.image}" alt="Card image cap">
-  <div class="card-body">
-    <h5 class="card-title">${recipe.title}</h5>
-    <p class="card-text">${recipe.summary}</p>
-
-    <a href="#" class="btn btn-primary">Go somewhere</a>
+    <div id="loader-wrapper" style="height: 500px">
+      <div class="sk-folding-cube">
+      <div class="sk-cube1 sk-cube"></div>
+      <div class="sk-cube2 sk-cube"></div>
+      <div class="sk-cube4 sk-cube"></div>
+      <div class="sk-cube3 sk-cube"></div>
     </div>
-    `)
-    // <p class="card-text">${recipe.analyzedInstructions}</p>
+    </div>
+  `)
+
+  $.ajax({
+    method : 'GET',
+    url : SERVER + `/recipes/search?food=${foodKeyword}`
+  }).done(response => {
+    let randomNum = Math.floor(Math.random() * response.results.length);
+    console.log(response.results)
+    console.log(response.results.length)
+    console.log(randomNum)
+    let recipe = response.results[randomNum]
+
+    foodKeyword = recipe.title    
+    search(recipe.title)
+    checkAdded(recipe.id, (res) => {
+      let temp
+      if(res.includes("Add")) {
+        temp = `<button id="toggle-favorite-button" onclick="toggleFavorite('${recipe.id}', '${recipe.title}')" class="btn btn-primary">${res}</button>`
+      } else temp = `<button id="toggle-favorite-button" onclick="toggleFavorite('${recipe.id}', '${recipe.title})" class="btn btn-danger">${res}</button>`
+      $('#content-recipe').empty()
+      $('#content-recipe').append(`
+  
+      <img class="card-img-top" src="${recipe.image}" alt="Card image cap">
+      <div class="card-body">
+      <h5 class="card-title">${recipe.title}</h5>
+      <p class="card-text">${recipe.summary}</p>
+      <a href=${recipe.sourceUrl} target="_blank" class="btn btn-primary">Checkout Full Recipe</a>
+      ${temp}
+      </div>
+      `)
+    })
+  }).fail(response => {
+    console.log(response.responseJSON.message)
+  })
 }
 
 
-function showUserProfile(user){
-  let name = user.name
-  let avatarURL = user.avatarURL
+// $('#recipe').on('')
+function checkAdded(recipeId, cb) {
+    
+    const access_token = localStorage.getItem('access_token')
+    
+    $.ajax({
+      method : 'GET',
+      url : SERVER + '/recipes/favorites',
+      headers : {
+        access_token
+      }
+    })
+  .done(response => {
+    let added = false
+    console.log(response.data, 'sudah keluar') 
+    response.data.forEach(el => {
+      if(el.RecipeId === recipeId) added = true
+    })
+    if(added === true) cb("Remove from favourites")
+    else cb("Add to favourites")
+  })
+}
 
-  $('#content-profile').empty()
-  $('#content-profile').append(`
-  `)
+// function removeFavorites(recipeId) {
+//   const access_token = localStorage.getItem('access_token')
+
+//   $.ajax({
+//     method: 'DELETE',
+//     url: SERVER + `/recipes/delete/${recipeId}`,
+//     headers: {
+//       access_token
+//     }
+//   }).done(_=> {
+//     showUserFavorites()
+//     $('#toggle-favorite-button').text('Add to Favorites')
+//     $('#toggle-favorite-button').removeClass('btn-danger')
+//     $('#toggle-favorite-button').addClass('btn-primary')
+
+//     // showRecipe()
+//   })
+//   .fail(err => console.log(err.responseJSON.message))
+// }
+
+function toggleFavorite(id, recipeName){
+  console.log('toggle favorite:', id, recipeName)
+
+  const recipeId = id;
+  const access_token = localStorage.getItem('access_token')
+
+   if ($('#toggle-favorite-button').text().includes('Add')) {
+      
+    $.ajax({
+      method : 'GET',
+      url : SERVER + `/recipes/addToFavorites?RecipeId=${recipeId}&recipeName=${recipeName.replace('&','%26')}`,
+      headers : {
+        access_token
+      }
+    })
+    .done(_=>{
+      console.log('added to favorites')
+      showUserFavorites()
+      $('#toggle-favorite-button').text('Remove from Favorites')
+      $('#toggle-favorite-button').removeClass('btn-primary')
+      $('#toggle-favorite-button').addClass('btn-danger')
+
+    // showRecipe()
+    })
+    .fail(err => {
+      console.log(err.responseJSON.message)
+    })
+    } else {
+      $.ajax({
+        method: 'DELETE',
+        url: SERVER + `/recipes/delete/${recipeId}`,
+        headers: {
+          access_token
+        }
+      }).done(_=> {
+        showUserFavorites()
+        $('#toggle-favorite-button').text('Add to Favorites')
+        $('#toggle-favorite-button').removeClass('btn-danger')
+        $('#toggle-favorite-button').addClass('btn-primary')
+    
+        // showRecipe()
+      })
+      .fail(err => {
+        console.log(err.responseJSON.message)
+      })
+  
+    }
+
+
+}
+
+
+function showUserProfile(){
+  let access_token = localStorage.getItem('access_token')
+
+  $.ajax({
+    method : 'GET',
+    url : SERVER + '/findOne',
+    headers : {
+      access_token
+    }
+  })
+  .done(response => {
+
+    console.log(response)
+
+    let profile_picture = response.avatarUrl || './img/profile_pic.png'
+
+    $('#user-container').empty()
+    $('#user-container').append(`
+      <div class="card mb-3" id="content-profile">
+      <div class="card-body">
+        <div class ='avatar-container mb-3'>
+          <img class='avatar' src = ${profile_picture} style="height:auto,max-width: 125px">
+        </div>
+        <h5 class="card-title" style="text-align:center;">Welcome back, ${response.name}!</h5>
+      </div>
+    </div>
+    `)
+
+  })
+  .fail(error => {
+    console.log(error)
+  })
+
 
 }
 
 
 function showUserFavorites(){
-  let userFave = [
-    {
-      id: 640338,
-      title: 'Cracked Wheat Salad with Dates & Tahini Yogurt',
-      image: 'https://spoonacular.com/recipeImages/640338-312x231.jpg'
-    },
-    {
-      id: 640338,
-      title: 'Cracked Wheat Salad with Dates & Tahini Yogurt',
-      image: 'https://spoonacular.com/recipeImages/640338-312x231.jpg'
+
+  const access_token = localStorage.getItem('access_token')
+
+  $.ajax({
+    method : 'GET',
+    url : SERVER + '/recipes/favorites',
+    headers : {
+      access_token
     }
-  ]
+  }).done(response => {
 
+    console.log(response.data, "dari sini")
+    $('#favourite-container').empty()
 
-  $('#favourite-container').empty()
-
-  userFave.forEach(fave => {
+  //   <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-star-fill" fill="orange" xmlns="http://www.w3.org/2000/svg">
+  //   <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.283.95l-3.523 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+  // </svg>
     $('#favourite-container').append(`
-      <div class = "row mb-3">
-        <div class = "col-2">
-          <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-star-fill" fill="orange" xmlns="http://www.w3.org/2000/svg">
-            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.283.95l-3.523 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
-          </svg>
-        </div>
-        <div class = "col">
-          <p><a href="" onclick="getRecipe(${fave.id})">${fave.title}</a></p>
-        </div>
-      </div>    
+
+      <h5 class="title-section title-favorites">My Favorites</h5>
     `)
+
+    response.data.forEach( fave => {
+      $('#favourite-container').append(`
+        <div class = "row mb-3">
+
+          <div class = "col">
+            <p class="favorite-item" onclick="getFavoriteRecipe('${fave.RecipeId}', '${fave.recipeName}')">${fave.recipeName}</p>
+          </div>
+          
+          
+          <button class="remove-favorite-button" onclick="toggleFavorite('${fave.RecipeId}', '${fave.recipeName}')">
+            <div class = "col">        
+            
+            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash" fill="#212529" xmlns="http://www.w3.org/2000/svg">
+            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+            </svg>
+            
+            </div>
+          </button>
+        </div>    
+      `)
+      
+    })
+
+  }).fail(err => {
+
+    console.log(err)
 
   })
 }
 
+function getFavoriteRecipe(id, recipeName) {
+
+  //
+  console.log('getfav:', id, recipeName)
+
+  search(recipeName)
+
+    // Loader animation
+    $('#content-recipe').empty()
+    $('#content-recipe').append(`
+      <div id="loader-wrapper" style="height: 500px">
+        <div class="sk-folding-cube">
+        <div class="sk-cube1 sk-cube"></div>
+        <div class="sk-cube2 sk-cube"></div>
+        <div class="sk-cube4 sk-cube"></div>
+        <div class="sk-cube3 sk-cube"></div>
+      </div>
+      </div>
+    `)
+
+  $.ajax({
+    method: 'GET',
+    url: SERVER + `/recipes/findOne/${id}`,
+  }).done(recipe => {
+    // console.log(recipe)
+    // console.log('^--- find one')
+
+    // search(recipe.title)
+
+
+    $('#content-recipe').empty()
+    $('#content-recipe').append(`
+    
+    <img class="card-img-top" src="${recipe.image}" alt="Card image cap">
+    <div class="card-body">
+    <h5 class="card-title">${recipe.title}</h5>
+    <p class="card-text">${recipe.summary}</p>
+    <a href=${recipe.sourceUrl} target="_blank" class="btn btn-primary">Checkout Full Recipe</a>
+    <button id="toggle-favorite-button" onclick="toggleFavorite('${recipe.id}', '${recipe.title})" class="btn btn-danger">Remove from Favorites</button>
+    </div>
+    
+    `)
+
+
+
+  }).fail(err => {
+    console.log(err)
+  })
+
+}
+
+
+function searchRestaurant(){
+  let city = $('#search-bar').val()
+  console.log(city, '<<<<')
+  search(foodKeyword, city)
+}
+
+
+function promiseAjax (url, method, data){
+
+  return new Promise((resolve, reject) => {
+      $.ajax({
+        method: method,
+        url: url,
+        data: data
+      }).done(respones => {
+        resolve(respones)
+      }).fail(err => {
+        reject(err)
+      })
+
+  })
+}
+
+function search(foodInput, cityInput){
+  // e.preventDefault()
+  // const city = $("#city").val() || "jakarta"
+  const city = cityInput || "jakarta"
+  // const food = $('#food').val()
+  const food = foodInput
+  // console.log(city)
+  // console.log(food);
+  const maxDisplay = 5;
+
+  // console.log('kkjkjk');
+  
+    // Loader animation
+    $('#restaurants-container').empty()
+    $('#restaurants-container').append(`
+      <div id="loader-wrapper" style="height: 500px">
+        <div class="sk-folding-cube">
+        <div class="sk-cube1 sk-cube"></div>
+        <div class="sk-cube2 sk-cube"></div>
+        <div class="sk-cube4 sk-cube"></div>
+        <div class="sk-cube3 sk-cube"></div>
+      </div>
+      </div>
+    `)
+
+  return promiseAjax(SERVER + '/restaurants/city', 'GET', {city})
+      .then(kota => {
+
+        let id = +kota.id
+
+        return promiseAjax(SERVER + '/restaurants/search', 'GET', {city: id, makanan: food })
+      })
+      .then(restaurants => {
+
+
+        console.log(restaurants, '<<<< restaturants')
+        if(restaurants.length > 0){
+          
+          $('#restaurants-container').empty()
+          for(let i = 0; i < maxDisplay; i++){
+            let restaurant = restaurants[i]
+            //console.log(restaurant, '<<<<<');
+            let location = restaurant.location.split(' ').join('%20')
+            
+            
+            if(restaurant.img){
+              let gMapURL = (`https://www.google.com/maps/search/?api=1&query=${location}`)
+              $('#restaurants-container').append(`
+                <div class="card mb-2">
+                <img class="card-img-top" src=${restaurant.img} alt="Card image cap">
+                <div class="card-body">
+            
+                  <h5 class="card-title"><a href = ${restaurant.url} target="_blank">${restaurant.name}</a></h5>
+                  <p class="card-text"><a href = ${gMapURL} target="_blank">View Location</a></p>
+            
+                </div>
+              </div>
+              `)
+              
+            }
+          }
+            
+          $("#city").val("")
+          $('#food').val("")
+
+        } else {
+          $('#restaurants-container').empty()
+          $('#restaurants-container').append(`
+          <div class="card mb-2">
+          <div class="card-body">
+      
+            <h5 class="card-title">No Restaurant Found Nearby</h5>
+      
+          </div>
+        </div>
+        `)
+
+
+        }
+
+      })
+      .catch(err => {
+        console.log(err);
+
+      })
+} 
 
 function signOut() {
   var auth2 = gapi.auth2.getAuthInstance();
@@ -385,4 +761,66 @@ function signOut() {
   });
   localStorage.clear()
   afterSignOut()
+
+}
+
+function searchFood() {
+  const SERVER = 'http://localhost:3000'
+
+  const searchKey = $('#search-food').val()
+
+  console.log({searchKey})
+  
+    $.ajax({
+      method: 'GET',
+      url: SERVER + '/recipes/search',
+      data: { food: searchKey }
+    }).done(response => {
+      foods = response.results 
+
+      console.log({foods})
+
+      $('#content-recipe').hide()
+      $('#restaurants-container').hide()
+      $('#search-results').show()
+
+      $('#search-results').append(`
+        <h3 id="result-info">Search results for <span>"${searchKey}"<span></h3>
+
+        <div id="food-cards-container"></div>
+      `)
+
+      foods.forEach(food => {
+
+        $('#food-cards-container').append(`
+
+
+        <div id="food-card" class="card mb-4" >
+          <div class="row no-gutters">
+            <div class="col-md-4">
+              <img src="${food.image}" class="card-img" alt=${food.title}>
+            </div>
+            <div class="col-md-8">
+              <div class="card-body">
+                <h5 class="card-title">${food.title}</h5>
+                <p class="card-text food-card-summary">${food.summary}</p>
+                <a href=${tempRecipe.sourceUrl} target="_blank" class="btn btn-primary">Checkout Full Recipe</a>
+            <button onclick="toggleFavorite('${tempRecipe.id}', '${tempRecipe.title}')" class="btn btn-primary">Save to Favorites</button>
+          </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        `)
+
+      })
+
+
+
+    }).fail(err => {
+      reject(err)
+    })
+
+
 }

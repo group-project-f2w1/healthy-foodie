@@ -82,7 +82,7 @@ class RecipeController {
         res.status(200).json(response.data)
       })
       .catch(err => {
-        console.log({err})
+        //console.log({err})
         next(err)
       })
   }
@@ -101,7 +101,7 @@ class RecipeController {
       if (hadBeenAdded) {
         next({
           status: 400, 
-          message: 'Recipe had already been added to favorites'
+          msg: 'Recipe had already been added to favorites'
         })
       } else {
 
@@ -141,13 +141,11 @@ class RecipeController {
           where: {UserId, RecipeId}
         })
 
-        res.status(201).json({
+        res.status(200).json({
           message: 'Successfully deleted favorite item'
         })
       } else {
-        res.status(201).json({
-          message: 'Cannot find favorite item'
-        })
+        throw {msg: 'Cannot find favorite item', status: 404}
       }
 
     } catch (error) {

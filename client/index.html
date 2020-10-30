@@ -53,7 +53,7 @@
                 </form>
                 
                   <div class = "login-btn-group">
-                    <button type = "submit" class = "btn btn-primary login-btn" onclick="signIn(event)">Sign In</button>
+                    <button type = "submit" class = "btn btn-dark login-btn" onclick="signIn(event)">Sign In</button>
                     <div class="g-signin2 login-google" data-onsuccess="onSignIn"></div>
 
                   </div>
@@ -85,20 +85,12 @@
   
       <div class="collapse navbar-collapse ">
         <ul class="navbar-nav mr-auto">
-  
-          <li class="nav-item">
-            <a class="nav-link" onclick ="showRecipe()" href="#">Next Recipe</a>
-          </li>
 
           <!-- Debug Links -->
 
           <!-- <li class="nav-item">
             <a class="nav-link" onclick ="testSearch()" href="#">GET Restaurant</a>
           </li>
-
-          <li class="nav-item">
-            <a class="nav-link"  href="#">Next Recipe</a>
-          </li> -->
 
           <!-- END Debug Links -->
 
@@ -138,6 +130,9 @@
           <!-- This section will be appended with jQuery showRecipe() -->
         </div>
 
+        <button type="button" class="btn btn-dark p-2 mt-3 mb-4" style="width:100%;" onclick ="afterSignIn()">Next Recipe</button>
+
+
       </div>
       <div class="col-3">
 
@@ -156,10 +151,8 @@
 
   </div>
   
-
     
   </section>
-
 
 
   <!-- Modal for Register User -->
@@ -191,7 +184,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary" onclick="signUp()" data-dismiss="modal">Create Account</button>
+            <button type="button" class="btn btn-dark" onclick="signUp()" data-dismiss="modal">Create Account</button>
           </div>
         </div>
       </div>

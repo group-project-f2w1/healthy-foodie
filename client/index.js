@@ -185,6 +185,7 @@ function afterSignIn(){
 }
 
 function showAllHome(){
+  console.log('showallhome')
   showRecipe()
   showUserFavorites()
   showUserProfile()
@@ -253,8 +254,8 @@ function signUp(){
   let name = $('#register-fullname').val()
   let password = $('#register-password').val()
 
-  console.log('user trying to register')
-  console.log(email, password)
+  // console.log('user trying to register')
+  // console.log(email, password)
 
   $.ajax({
     method : 'POST',
@@ -264,9 +265,8 @@ function signUp(){
       name,
       password
     }
-  }).done(response => {
-    console.log(response.message)
-
+  }).done(_ => {
+    
   })
   .fail((error)=>{
     showError(error.responseJSON.message)
@@ -331,8 +331,8 @@ function showRecipe(){
   //   <h5 class="card-title">${tempRecipe.title}</h5>
   //   <p class="card-text">${tempRecipe.summary}</p>
 
-  //   <a href=${tempRecipe.sourceUrl} target="_blank" class="btn btn-primary">Checkout Full Recipe</a>
-  //   <a href="#" onclick="addToFavorites('${tempRecipe.id}', '${tempRecipe.title}')" class="btn btn-primary">Save to Favorites</a>
+  //   <a href=${tempRecipe.sourceUrl} target="_blank" class="btn btn-dark">Checkout Full Recipe</a>
+  //   <a href="#" onclick="addToFavorites('${tempRecipe.id}', '${tempRecipe.title}')" class="btn btn-dark">Save to Favorites</a>
 
   //   </div>
   // `)
@@ -345,13 +345,12 @@ function showRecipe(){
     url : SERVER + `/recipes/search?food=${foodKeyword}`
   }).done(response => {
     let randomNum = Math.floor(Math.random() * response.results.length);
-    console.log(response.results)
-    console.log(response.results.length)
-    console.log(randomNum)
+    // console.log(response.results)
+    // console.log(response.results.length)
+    // console.log(randomNum)
     let recipe = response.results[randomNum]
 
     foodKeyword = recipe.title    
-    search(recipe.title)
     
     $('#content-recipe').empty()
     $('#content-recipe').append(`
@@ -360,10 +359,13 @@ function showRecipe(){
     <div class="card-body">
       <h5 class="card-title">${recipe.title}</h5>
       <p class="card-text">${recipe.summary}</p>
-      <a href=${recipe.sourceUrl} target="_blank" class="btn btn-primary">Checkout Full Recipe</a>
-      <a href="#" onclick="addToFavorites('${recipe.id}', '${recipe.title}')" class="btn btn-primary">Save to Favorites</a>
+      <a href=${recipe.sourceUrl} target="_blank" class="btn btn-dark">Checkout Full Recipe</a>
+      <a href="#" onclick="addToFavorites('${recipe.id}', '${recipe.title}')" class="btn btn-dark">Save to Favorites</a>
       </div>
-    `)    
+    `)
+    
+    search(recipe.title)
+        
   }).fail(response => {
     console.log(response.responseJSON.message)
   })

@@ -2,7 +2,7 @@
 
 ## USER
 
-**Signup User**
+**User Sign Up**
 ----
   Create a new user in the database
 
@@ -100,9 +100,7 @@
 * **Error Response:**
 
   * **Code:** 500 INTERNAL SERVER ERROR <br />
-  
-  **OR** <br><br>
-
+  **OR** <br>
   * **Code:** 401 Invalid email or password <br />
   <!-- **Content:** `{ error : "Log in" }` -->
 
@@ -235,7 +233,7 @@
   Required : 
   Query : 
   - UserId as `id = [Integer]` 
-  - RecipeId, recipeName as `{RecipeId = [Integer], recipeName = [String] }`
+  - RecipeId, recipeName as `{ RecipeId = [Integer], recipeName = [String] }`
 
   
 * **Header Data Params**
@@ -264,6 +262,107 @@
   * **Code:** 500 INTERNAL SERVER ERROR <br />
   **OR**
   * **Code:** 400 Recipe had already been added to favorites <br />
+
+-------
+
+**Remove from Favorites**
+----
+  Remove User's favorites recipe from the list
+
+* **URL**
+
+  `/delete`
+
+* **Method:**
+  
+  `GET` 
+
+* **URL Params**
+
+  Required : `RecipeId = [Integer]` 
+
+  
+* **Header Data Params**
+
+  ```json
+    {
+      "access_token"
+    }
+
+  ```
+
+* **Body Data Params**
+
+  NONE
+
+
+* **Success Response:**
+
+  * **Code:** 201 Sucessfully deleted Favorite Item <br />
+
+
+
+ 
+* **Error Response:**
+
+  * **Code:** 500 INTERNAL SERVER ERROR<br />
+  **OR**
+  * **Code:** 400 Cannot find favorite item<br />
+
+-------
+
+
+
+
+**Get User Favorites**
+----
+  Get Users' favorites recipes data
+
+* **URL**
+
+  `/favorites`
+
+* **Method:**
+  
+  `GET` 
+
+* **URL Params**
+
+  NONE
+
+  
+* **Header Data Params**
+
+  ```json
+    {
+      "access_token"
+    }
+
+  ```
+
+* **Body Data Params**
+
+  NONE
+
+
+* **Success Response:**
+
+  * **Code:** 200 OK <br />
+
+  **Content:** 
+    ```json    
+      {
+        "data" : "favorites Object",
+      }
+
+    ```
+
+ 
+* **Error Response:**
+
+  * **Code:** 500 INTERNAL SERVER ERROR<br />
+  **OR**
+  * **Code:** 400 Cannot find favorite item<br />
 
 -------
 
@@ -413,4 +512,53 @@
   
 -------
 
+
+
 ## UNSPLASH
+
+**Get Random Pic**
+----
+  Search random picture from unsplash
+
+* **URL**
+
+  `/img/random`
+
+* **Method:**
+  
+  `GET` 
+
+* **URL Params**
+
+  NONE
+
+
+* **Header Data Params**
+
+  NONE
+
+* **Body Data Params**
+
+  NONE
+
+
+* **Success Response:**
+
+  * **Code:** 200 OK <br />
+
+  **Content:** 
+
+    ```json
+      {
+        "id" : "image data id [Integer]",
+        "imgUrl" : "image data links"
+      }
+    ```
+
+ 
+* **Error Response:**
+
+  * **Code:** 500 INTERNAL SERVER ERROR <br />
+  
+-------
+

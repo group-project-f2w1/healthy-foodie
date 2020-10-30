@@ -4,7 +4,7 @@ const api = process.env.API_UNSPLASH
 
 class imgController {
 
-  static randomPic(req, res){
+  static randomPic(req, res, next){
 
     axios({
       method : 'get',
@@ -14,7 +14,7 @@ class imgController {
       }
     })
       .then(img => {
-        console.log(img.data.id, '<<<<');
+        //console.log(img.data.id);
         res.status(200).json(
           {
             id:img.data.id,
@@ -23,7 +23,7 @@ class imgController {
           })
       })
       .catch(err => {
-        res.status(500).send(err)
+        next(err)
       })
   }
 }
